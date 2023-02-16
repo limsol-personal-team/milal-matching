@@ -1,0 +1,12 @@
+# local env
+**/venv
+
+# python cache
+**/__pycache__
+
+# django dev db
+*.sqlite3
+
+# user config
+/.vscode
+/.python-version
