@@ -51,6 +51,17 @@ If update to models, run commands to generate migrations:
 python manage.py makemigrations
 ```
 
+To see current state of migrations, run:
+
+```bash
+python manage.py showmigrations
+```
+
 ## Tips
 
 - For managing Node versions, use [nvm](https://github.com/nvm-sh/nvm). For managing python versions, use [pyenv](https://github.com/pyenv/pyenv)
+
+- API Docs:
+  - https://readthedocs.org/projects/django-rest-framework-old-docs/
+
+  - https://docs.djangoproject.com/en/1.11/
