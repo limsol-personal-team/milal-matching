@@ -5,9 +5,11 @@ class MilalMatching(BaseModel):
     match_date = models.DateField(auto_now_add=True)
     milal_friend = models.ForeignKey(
         'users.MilalFriend',
-        on_delete=models.SET_NULL
+        on_delete=models.SET_NULL,
+        null=True
     )
     volunteer = models.ForeignKey(
         'users.Volunteer',
-        on_delete=models.SET_NULL
+        on_delete=models.SET_NULL,
+        null=True
     )
