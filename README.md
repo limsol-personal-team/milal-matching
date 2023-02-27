@@ -57,6 +57,29 @@ To see current state of migrations, run:
 python manage.py showmigrations
 ```
 
+## GIT Tips
+
+If you are in `main`, create and checkout into your own branch. If you already have your own branch, remove `-b` flag :
+
+```
+git checkout -b my-branch
+```
+
+Update your own branch with `main` so that you can make a pull request:
+
+```
+git pull main
+```
+
+Stage the edits, commit, and push them:
+
+```
+git add .
+git commit -m "YOUR_MESSAGE_HERE"
+git push
+```
+
+
 ## Tips
 
 - For managing Node versions, use [nvm](https://github.com/nvm-sh/nvm). For managing python versions, use [pyenv](https://github.com/pyenv/pyenv)
