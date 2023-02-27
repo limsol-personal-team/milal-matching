@@ -29,7 +29,7 @@ You will also see any lint errors in the console.
 
 Boilerplate Django App using Django Rest Framework. Follows [MVC](https://developer.mozilla.org/en-US/docs/Glossary/MVC) design pattern.
 
-Setup python (3.10) packages by creating virtual env in python and activating it:
+Setup python (2.7) packages by creating virtual env in python and activating it:
 
 ```bash
 cd server
