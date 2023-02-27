@@ -24,4 +24,5 @@ class VolunteerSerializer(serializers.HyperlinkedModelSerializer):
             'graduation_year',
             'first_name',
             'last_name',
+            'id'
         ]
