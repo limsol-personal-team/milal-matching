@@ -1,6 +1,7 @@
 from django.db import models
 from common.models import BaseModel
 
+
 class MilalMatching(BaseModel):
     match_date = models.DateField(auto_now_add=True)
     milal_friend = models.ForeignKey(

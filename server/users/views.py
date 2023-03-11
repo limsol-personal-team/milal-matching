@@ -4,6 +4,7 @@ from rest_framework import permissions
 from users.models import Volunteer
 from users.serializers import UserSerializer, GroupSerializer, VolunteerSerializer
 
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.

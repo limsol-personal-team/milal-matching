@@ -1,3 +1,4 @@
 Django==1.11.29
 djangorestframework==3.9.4
+pre-commit==1.21.0
 pytz==2022.7.1

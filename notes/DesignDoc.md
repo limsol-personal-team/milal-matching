@@ -3,7 +3,7 @@ This is how we currently handle matching/pairing of volunteer with milal friend.
 
 ![Milal](matching_excel.png)
 
-It's bad. Can be improved. 
+It's bad. Can be improved.
 
 Requirements:
 
