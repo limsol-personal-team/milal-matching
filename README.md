@@ -79,6 +79,14 @@ git commit -m "YOUR_MESSAGE_HERE"
 git push
 ```
 
+NOTE: 
+
+For commits to python `server`, we use [pre-commit](https://pre-commit.com/). `CD` into `server` and run:
+```
+pre-commit install
+```
+This will install pre-commit and any commit will run the python linter on `server` files only.
+
 
 ## Tips
 
