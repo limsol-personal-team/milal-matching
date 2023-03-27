@@ -81,7 +81,7 @@ git push
 
 ## Linter:
 
-# Python Server
+### Python Server
 
 For commits to python `server`, we use [pre-commit](https://pre-commit.com/). `CD` into `server` and run:
 ```bash
@@ -89,7 +89,7 @@ pre-commit install
 ```
 This will install pre-commit and any commit will run the python linter on `server` files only.
 
-# JS Client
+### JS Client
 
 For commits to js `client`, we use [prettier](https://prettier.io/docs/en/install.html#git-hooks) with git hooks. `CD` into top level directory and run commands:
 ```bash
