@@ -1,25 +1,36 @@
-import * as React from 'react';
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
+import * as React from "react";
+import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import {
   randomCreatedDate,
   randomTraderName,
   randomUpdatedDate,
-} from '@mui/x-data-grid-generator';
+} from "@mui/x-data-grid-generator";
 
 const columns: GridColDef[] = [
-  { field: 'name', headerName: 'Name', width: 180, editable: true },
-  { field: 'age', headerName: 'Age', type: 'number', editable: true },
   {
-    field: 'dateCreated',
-    headerName: 'Date Created',
-    type: 'date',
+    field: "name",
+    headerName: "Name",
+    width: 180,
+    editable: true,
+  },
+
+  {
+    field: "age",
+    headerName: "Age",
+    type: "number",
+    editable: true,
+  },
+  {
+    field: "dateCreated",
+    headerName: "Date Created",
+    type: "date",
     width: 180,
     editable: true,
   },
   {
-    field: 'lastLogin',
-    headerName: 'Last Login',
-    type: 'dateTime',
+    field: "lastLogin",
+    headerName: "Last Login",
+    type: "dateTime",
     width: 220,
     editable: true,
   },
@@ -65,11 +76,9 @@ const rows: GridRowsProp = [
 
 export default function SignupGrid() {
   return (
-    <div style={{ height: 300, width: '100%' }}>
+    <div style={{ height: 300, width: "100%" }}>
       <h1>Welcome to the React Homepage</h1>
-      <DataGrid 
-        rows={rows} 
-        columns={columns} />
+      <DataGrid rows={rows} columns={columns} />
     </div>
   );
 }

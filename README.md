@@ -61,13 +61,13 @@ python manage.py showmigrations
 
 If you are in `main`, create and checkout into your own branch. If you already have your own branch, remove `-b` flag :
 
-```
+```bash
 git checkout -b my-branch
 ```
 
 Update your own branch with `main` so that you can make a pull request:
 
-```
+```bash
 git pull main
 ```
 
@@ -79,14 +79,27 @@ git commit -m "YOUR_MESSAGE_HERE"
 git push
 ```
 
-NOTE: 
+## Linter:
+
+# Python Server
 
 For commits to python `server`, we use [pre-commit](https://pre-commit.com/). `CD` into `server` and run:
-```
+```bash
 pre-commit install
 ```
 This will install pre-commit and any commit will run the python linter on `server` files only.
 
+# JS Client
+
+For commits to js `client`, we use [prettier](https://prettier.io/docs/en/install.html#git-hooks) with git hooks. `CD` into top level directory and run commands:
+```bash
+npx husky install
+npx husky add .husky/pre-commit "npx lint-staged"
+```
+
+`CD` into `client` and run `npm i` to install new devDependencies.
+
+This will run prettier before committing any changes in `client` folder.
 
 ## Tips
 

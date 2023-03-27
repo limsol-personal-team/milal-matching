@@ -3,25 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@mui/x-data-grid": "^6.0.0",
-    "@mui/x-data-grid-generator": "^6.0.0",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "antd": "^5.3.0",
-    "clsx": "^1.2.1",
-    "react-data-grid": "^7.0.0-beta.26",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4",
     "@emotion/styled": "latest",
     "@mui/icons-material": "latest",
     "@mui/material": "latest",
+    "@mui/x-data-grid": "^6.0.0",
+    "@mui/x-data-grid-generator": "^6.0.0",
     "@mui/x-data-grid-pro": "latest",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "antd": "^5.3.0",
+    "clsx": "^1.2.1",
     "react": "latest",
+    "react-data-grid": "^7.0.0-beta.26",
     "react-dom": "latest",
-    "typescript": "latest"
+    "react-scripts": "5.0.1",
+    "typescript": "latest",
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -46,5 +46,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.0",
+    "prettier": "2.8.7"
+  },
+  "lint-staged": {
+    "**/*": "npx prettier --write --ignore-unknown"
   }
 }

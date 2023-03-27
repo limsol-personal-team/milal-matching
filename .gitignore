@@ -11,3 +11,4 @@
 # user config
 /.vscode
 /.python-version
+/.husky
