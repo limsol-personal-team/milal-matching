@@ -6,8 +6,7 @@ repos:
     -   id: check-yaml
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
--   repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: v1.5.4  # Use the sha / tag you want to point at
+-   repo: https://github.com/psf/black
+    rev: 22.10.0
     hooks:
-    - id: autopep8
-      exclude: migrations/
+    -   id: black
