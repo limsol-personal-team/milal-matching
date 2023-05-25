@@ -125,7 +125,7 @@ export default function PersistentDrawerLeft() {
         </List>
         <Divider />
         <List>
-          {["Mail", "Trash", "Spam"].map((text, index) => (
+          {["CheckInPage", "Trash", "Spam"].map((text, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton component={NavLink} to={text}>
                 <ListItemIcon>
