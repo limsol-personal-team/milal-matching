@@ -1,5 +1,6 @@
 import React from "react";
-import "./Checkinstyle.css";
+// import "./Checkinstyle.css";
+// @javi commenting this out for now since it messes with css globally
 export class CheckInPage extends React.Component {
   handleChange = (event: any) => {
     event.preventDefault();

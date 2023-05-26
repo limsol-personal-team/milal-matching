@@ -14,6 +14,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "antd": "^5.5.1",
     "clsx": "^1.2.1",
     "react": "latest",
     "react-data-grid": "^7.0.0-beta.26",
