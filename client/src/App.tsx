@@ -28,6 +28,7 @@ import {
   randomTraderName,
   randomUpdatedDate,
 } from "@mui/x-data-grid-generator";
+import { NavLink } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -111,9 +112,9 @@ export default function PersistentDrawerLeft() {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
+          {["Page1", "Page2", "Page3", "Page4"].map((text, index) => (
             <ListItem key={text} disablePadding>
-              <ListItemButton>
+              <ListItemButton component={NavLink} to={text}>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
@@ -124,9 +125,9 @@ export default function PersistentDrawerLeft() {
         </List>
         <Divider />
         <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
+          {["CheckInPage", "Trash", "Spam"].map((text, index) => (
             <ListItem key={text} disablePadding>
-              <ListItemButton>
+              <ListItemButton component={NavLink} to={text}>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
