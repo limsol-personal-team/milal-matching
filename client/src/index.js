@@ -1,16 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App.tsx";
+import App from "./app/App";
 import reportWebVitals from "./reportWebVitals";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { StyledEngineProvider } from "@mui/material/styles";
-import ErrorPage from "./components/ErrorPage";
-import { CheckInPage } from "./pages/CheckinPage";
-
+import ErrorPage from "./app/components/ErrorPage";
+import { CheckInPage } from "./app/pages/CheckinPage";
 
 const router = createBrowserRouter([
   {
@@ -29,7 +25,6 @@ const router = createBrowserRouter([
     element: <CheckInPage />,
     errorElement: <ErrorPage />,
   },
-
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

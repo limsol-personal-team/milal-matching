@@ -9,7 +9,7 @@ import {
   useTheme,
 } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { MyContext } from "../App";
+import { MyContext } from "../pages/MatchingPage";
 
 const drawerWidth = 240;
 

@@ -5,8 +5,8 @@ import {
   randomTraderName,
   randomUpdatedDate,
 } from "@mui/x-data-grid-generator";
-import MilalFriendTable from "../components/MilalFriendTable";
-import VolunteerTable from "../components/VolunteerTable";
+import MilalFriendTable from "./MilalFriendTable";
+import VolunteerTable from "./VolunteerTable";
 
 export default function SignupGrid() {
   return (

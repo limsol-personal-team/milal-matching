@@ -18,10 +18,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
-import AppBar from "./components/AppBar";
+import AppBar from "../components/AppBar";
 import { createContext } from "react";
-import SignupGrid from "./pages/SignupGrid";
-import MilalFriendTable from "./components/MilalFriendTable";
+import SignupGrid from "../components/SignupGrid";
+import MilalFriendTable from "../components/MilalFriendTable";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import {
   randomCreatedDate,
@@ -84,7 +84,7 @@ export default function PersistentDrawerLeft() {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
+      {/* <CssBaseline /> */}
       <MyContext.Provider value={{ open, setOpen }}>
         <AppBar />
       </MyContext.Provider>
@@ -139,7 +139,12 @@ export default function PersistentDrawerLeft() {
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
-        <SignupGrid />
+        {/* <SignupGrid /> */}
+        <MilalFriendTable />
+        <Typography paragraph>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod sapien faucibus et molestie ac.
+        </Typography>
       </Main>
     </Box>
   );
