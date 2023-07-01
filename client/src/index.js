@@ -6,7 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { StyledEngineProvider } from "@mui/material/styles";
 import ErrorPage from "./app/components/ErrorPage";
-import { CheckInPage } from "./app/pages/CheckinPage";
+import CheckInPage from "./app/pages/CheckinPage";
 
 const router = createBrowserRouter([
   {

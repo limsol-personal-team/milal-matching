@@ -1,6 +1,6 @@
 # local env
 **/venv
-
+/node_modules
 # python cache
 **/__pycache__
 **/*.pyc
@@ -12,3 +12,5 @@
 /.vscode
 /.python-version
 /.husky
+
+
