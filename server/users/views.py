@@ -1,23 +1,7 @@
-from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
-from rest_framework import permissions
 from users.models import Volunteer
-from users.serializers import UserSerializer, GroupSerializer, VolunteerSerializer
-
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-
-
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
+from users.models import MilalFriend
+from users.serializers import VolunteerSerializer
 
 
 class VolunteerViewSet(viewsets.ModelViewSet):
@@ -26,3 +10,10 @@ class VolunteerViewSet(viewsets.ModelViewSet):
     """
     queryset = Volunteer.objects.all().order_by('-first_name')
     serializer_class = VolunteerSerializer
+
+class MilalFriendViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows milal friend to be viewed or edited.
+    """
+    queryset = MilalFriend.objects.all().order_by('-first_name')
+    serializer_class = MilalFriend

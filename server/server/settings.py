@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
 INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'classes.apps.ClassesConfig',
@@ -39,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
+    'rest_framework',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -53,6 +55,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'server.urls'
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+}
 
 TEMPLATES = [
     {
@@ -108,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 

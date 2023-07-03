@@ -1,6 +1,7 @@
 from django.db import models
 from common.models import BaseModel
 
+
 class Person(BaseModel):
     description = models.TextField(
         null=True
@@ -12,13 +13,13 @@ class Person(BaseModel):
     class Meta:
         abstract = True
 
+
 class Volunteer(Person):
     active = models.BooleanField(default=False)
     graduation_year = models.PositiveSmallIntegerField(
         null=True
     )
 
+
 class MilalFriend(Person):
     active = models.BooleanField(default=False)
-
-    

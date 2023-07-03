@@ -1,6 +1,6 @@
 # local env
 **/venv
-
+/node_modules
 # python cache
 **/__pycache__
 **/*.pyc
@@ -11,3 +11,6 @@
 # user config
 /.vscode
 /.python-version
+/.husky
+
+
