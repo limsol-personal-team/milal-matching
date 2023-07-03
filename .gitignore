@@ -1,6 +1,7 @@
 # local env
 **/venv
 /node_modules
+/TempServer/node_modules
 # python cache
 **/__pycache__
 **/*.pyc
