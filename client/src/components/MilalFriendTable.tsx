@@ -1,6 +1,8 @@
 import React from "react";
 import { Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import { Box } from "@mui/material";
+import "../static/MilalFriendTable.css";
 
 interface DataType {
   key: string;
@@ -8,25 +10,41 @@ interface DataType {
   volunteerName: string;
 }
 
+const COLUMN_STYLE = {
+  whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+};
+
+function renderText(text: String) {
+  return (
+    // @ts-ignore for now
+    <div className="responsive-column" style={COLUMN_STYLE}>
+      {text}
+    </div>
+  );
+}
+
 const columns: ColumnsType<DataType> = [
   {
     title: "MilalFriend",
     dataIndex: "milalFriendName",
     key: "milalFriendName",
-    render: (text) => <a>{text}</a>,
+    render: renderText,
   },
   {
     title: "Volunteer",
     dataIndex: "volunteerName",
     key: "volunteerName",
+    render: renderText,
   },
   {
     title: "Action",
     key: "action",
     render: (_, record) => (
       <Space size="middle">
-        <a>Match</a>
-        <a>Unmatch</a>
+        <a>Add</a>
+        <a>Rem</a>
       </Space>
     ),
   },
@@ -35,8 +53,8 @@ const columns: ColumnsType<DataType> = [
 const data: DataType[] = [
   {
     key: "1",
-    milalFriendName: "John Brown",
-    volunteerName: "John Green",
+    milalFriendName: "John ASDFSDFADSFasdfasdfa ",
+    volunteerName: "John Greenasdfasdfasdfadsf",
   },
   {
     key: "2",
@@ -50,6 +68,10 @@ const data: DataType[] = [
   },
 ];
 
-const App: React.FC = () => <Table columns={columns} dataSource={data} />;
-
-export default App;
+export default function MilalFriendTable() {
+  return (
+    <Box>
+      <Table columns={columns} dataSource={data} />
+    </Box>
+  );
+}

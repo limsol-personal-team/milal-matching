@@ -1,0 +1,11 @@
+@media screen and (max-width: 767px) {
+  .responsive-column {
+    width: 85px; /* Adjust the width for mobile */
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .responsive-column {
+    width: 100%; /* Adjust the width for desktop */
+  }
+}
