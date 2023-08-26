@@ -5,4 +5,4 @@ from rest_framework import serializers
 class MilalMatchingSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = MilalMatching
-        fields = '__all__'
+        fields = "__all__"

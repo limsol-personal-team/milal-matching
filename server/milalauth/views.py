@@ -17,34 +17,40 @@ import os
 
 # Create your views here.
 
+
 class AuthViewSet(viewsets.ViewSet):
-
     SIGN_IN_CACHE_KEY = "SIGN_IN_CACHE_KEY"
-    SIGN_IN_KEY_TTL = 60 * 60 * 24 # seconds
+    SIGN_IN_KEY_TTL = 60 * 60 * 24  # seconds
     SPREADSHEET_ID = "1Z566UWaWeCIkUtND8hx7721963J2gUHzwFJN2_Nh-bk"
-    SCOPES = ['https://www.googleapis.com/auth/spreadsheets ']
+    SCOPES = ["https://www.googleapis.com/auth/spreadsheets "]
 
-
-
-    @action(detail=False, methods=['get', 'post'], url_path='sign_in_token', url_name='sign_in_token')
+    @action(
+        detail=False,
+        methods=["get", "post"],
+        url_path="sign_in_token",
+        url_name="sign_in_token",
+    )
     def sign_in_token(self, request):
-
-        if request.method == 'GET':
+        if request.method == "GET":
             token = cache.get(self.SIGN_IN_CACHE_KEY)
-            return Response({'token': token}, status=200)
+            return Response({"token": token}, status=200)
 
-        if request.method == 'POST':
+        if request.method == "POST":
             value = uuid.uuid4().hex
             cache.set(self.SIGN_IN_CACHE_KEY, value, self.SIGN_IN_KEY_TTL)
-            return Response({'token': value}, status=201)
+            return Response({"token": value}, status=201)
 
         return Response(status=405)
 
-    @action(detail=False, methods=['get'], url_path='sign_in_check', url_name='sign_in_check')
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path="sign_in_check",
+        url_name="sign_in_check",
+    )
     def sign_in_check(self, request):
-
-        if request.method == 'GET': 
-            token = request.query_params.get('token', None)
+        if request.method == "GET":
+            token = request.query_params.get("token", None)
             if token is not None:
                 if token == cache.get(self.SIGN_IN_CACHE_KEY):
                     return Response(status=200)
@@ -52,20 +58,22 @@ class AuthViewSet(viewsets.ViewSet):
 
         return Response(status=405)
 
-    @action(detail=False, methods=['post'], url_path='sign_in_record', url_name='sign_in_record')
+    @action(
+        detail=False,
+        methods=["post"],
+        url_path="sign_in_record",
+        url_name="sign_in_record",
+    )
     def sign_in_record(self, request):
-
-        creds = service_account.Credentials.from_service_account_file('./milalauth/credentials.json')
-        if request.method == 'POST': 
-            service = build('sheets', 'v4', credentials=creds)
+        creds = service_account.Credentials.from_service_account_file(
+            "./milalauth/credentials.json"
+        )
+        if request.method == "POST":
+            service = build("sheets", "v4", credentials=creds)
             values = [
-                [
-                    request.data["email"],  request.data["timestamp"]
-                ],
+                [request.data["email"], request.data["timestamp"]],
             ]
-            body = {
-                'values': values
-            }
+            body = {"values": values}
 
             # Call the Sheets API
             sheet = service.spreadsheets()
@@ -73,11 +81,9 @@ class AuthViewSet(viewsets.ViewSet):
                 spreadsheetId=self.SPREADSHEET_ID,
                 range="Sheet1!A:B",
                 valueInputOption="USER_ENTERED",
-                body=body
+                body=body,
             ).execute()
 
             return Response(status=200)
 
         return Response(status=405)
-
-    
