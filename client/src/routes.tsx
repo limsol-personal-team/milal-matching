@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Navigate, useRoutes } from "react-router-dom";
 // layouts
+import OpsDashboard from "./layout/OpsDashboard";
 import Dashboard from "./layout/Dashboard";
 // pages
 import CheckInAuthPage from "./pages/CheckinAuthPage";
@@ -18,13 +19,20 @@ export default function Router() {
       path: "/",
       element: <Dashboard />,
       children: [
-        { element: <Navigate to="/home" />, index: true },
-        { path: "home", element: <HomePage /> },
-        { path: "matching", element: <MatchingPage /> },
+        { element: <Navigate to="/404" />, index: true },
         { path: "checkin", element: <CheckInPage /> },
-        { path: "checkin-qr", element: <CheckInQRPage /> },
         { path: "checkin-auth/:token", element: <CheckInAuthPage /> },
         { path: "404", element: <ErrorPage /> },
+      ],
+    },
+    {
+      path: "/ops/",
+      element: <OpsDashboard />,
+      children: [
+        { element: <Navigate to="/ops/home" />, index: true },
+        { path: "/ops/home", element: <HomePage /> },
+        { path: "/ops/matching", element: <MatchingPage /> },
+        { path: "/ops/checkin-qr", element: <CheckInQRPage /> },
       ],
     },
     {
