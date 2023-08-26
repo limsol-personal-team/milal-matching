@@ -12,5 +12,5 @@
 /.vscode
 /.python-version
 /.husky
-
+**/credentials.json
 

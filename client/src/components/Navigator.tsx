@@ -23,8 +23,8 @@ const categories = [
         icon: <PeopleIcon />,
       },
       {
-        id: "Check-In",
-        slug: "checkin",
+        id: "Check-In QR",
+        slug: "checkin-qr",
         icon: <AssignmentIcon />,
       },
     ],
