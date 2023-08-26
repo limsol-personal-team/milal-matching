@@ -56,8 +56,8 @@ const CheckInPage = (props: any) => {
       {submissionStatus ? (
         <Alert severity="success">Check-in succeeded!</Alert>
       ) : (
-        <Grid container spacing={2}>
-          <Grid item xs={3}>
+        <Grid container spacing={2} sx={{ flexDirection: { xs: "column", md: "row" } }}>
+          <Grid item xs={12} md={2}>
             <TextField
               id="outlined-read-only-input"
               label="Name"
@@ -67,7 +67,7 @@ const CheckInPage = (props: any) => {
               }}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} md={2}>
             <TextField
               id="outlined-read-only-input"
               label="Email"
@@ -77,7 +77,7 @@ const CheckInPage = (props: any) => {
               }}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} md={12}>
             <Button
               variant="contained"
               size="medium"
