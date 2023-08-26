@@ -71,7 +71,11 @@ class AuthViewSet(viewsets.ViewSet):
         if request.method == "POST":
             service = build("sheets", "v4", credentials=creds)
             values = [
-                [request.data["email"], request.data["timestamp"]],
+                [
+                    request.data["name"],
+                    request.data["email"],
+                    request.data["timestamp"],
+                ],
             ]
             body = {"values": values}
 
@@ -79,7 +83,7 @@ class AuthViewSet(viewsets.ViewSet):
             sheet = service.spreadsheets()
             sheet.values().append(
                 spreadsheetId=self.SPREADSHEET_ID,
-                range="Sheet1!A:B",
+                range="Sheet1!A:C",
                 valueInputOption="USER_ENTERED",
                 body=body,
             ).execute()
