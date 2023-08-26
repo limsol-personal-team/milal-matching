@@ -8,7 +8,7 @@ import axios from "axios";
 import React, { useState } from "react";
 
 const CheckInPage = (props: any) => {
-  const { email } = props.googleInfo;
+  const { email, name } = props.googleInfo;
   const [submissionStatus, setSubmissionStatus] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +19,8 @@ const CheckInPage = (props: any) => {
 
   const handleSubmit = () => {
     const data = {
-      email: props.googleInfo.email,
+      email: email,
+      name: name,
       timestamp: new Date().toLocaleString(),
     };
     setIsLoading(true);
@@ -56,7 +57,17 @@ const CheckInPage = (props: any) => {
         <Alert severity="success">Check-in succeeded!</Alert>
       ) : (
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid item xs={3}>
+            <TextField
+              id="outlined-read-only-input"
+              label="Name"
+              defaultValue={name}
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </Grid>
+          <Grid item xs={3}>
             <TextField
               id="outlined-read-only-input"
               label="Email"
