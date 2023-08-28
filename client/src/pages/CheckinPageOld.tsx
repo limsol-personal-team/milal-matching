@@ -27,7 +27,7 @@ const CheckInPage: React.FC = () => {
 
     // Send form data to server
     axios
-      .post("/submit-form", data)
+      .post("/api/submit-form", data)
       .then((response) => {
         console.log(response.data.message);
         // Show success alert

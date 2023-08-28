@@ -16,7 +16,7 @@ const CheckInAuthPage = () => {
   };
 
   const validateToken = (token: any) => {
-    const url = "http://localhost:8000/auth/sign_in_check?token=" + token;
+    const url = "/api/auth/sign_in_check?token=" + token;
     axios
       .get(url)
       .then(() => {

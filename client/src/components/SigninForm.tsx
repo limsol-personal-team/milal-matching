@@ -26,7 +26,7 @@ const CheckInPage = (props: any) => {
     setIsLoading(true);
 
     axios
-      .post("http://localhost:8000/auth/sign_in_record/", data)
+      .post("/api/auth/sign_in_record/", data)
       .then((response) => {
         setSubmissionStatus(true);
         setIsLoading(true);

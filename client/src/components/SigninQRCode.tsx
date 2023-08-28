@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SigninQRCode = () => {
-  const basePath = "http://localhost:3000/checkin/";
+  const basePath = "http://localhost:3000/checkin-auth/";
   const [qrCodeData, setQRCodeData] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
@@ -17,9 +17,7 @@ const SigninQRCode = () => {
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(
-        "http://localhost:8000/auth/sign_in_token/"
-      );
+      const response = await axios.get("/api/auth/sign_in_token/");
       const token = response.data.token;
       setQRCodeData(token);
     } catch (error) {
