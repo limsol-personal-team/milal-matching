@@ -79,6 +79,36 @@ git commit -m "YOUR_MESSAGE_HERE"
 git push
 ```
 
+## Docker
+
+Download [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+Build the image:
+
+```
+docker build -t django_app .
+```
+
+Run the image in a container and expose 8000:
+
+```
+docker run -p 8000:8000 --name milal-app django_app
+```
+
+Exec into a container:
+
+```
+docker exec -it milal-app sh
+```
+
+Other useful commands:
+
+```
+docker stop $(docker ps -aq) 
+docker rm $(docker ps -aq)
+```
+
+
 ## Linter:
 
 ### Python Server
