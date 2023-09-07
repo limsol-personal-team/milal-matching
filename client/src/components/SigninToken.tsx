@@ -37,7 +37,7 @@ const SigninToken = () => {
   return (
     <>
       <Typography>
-        Token: {token}
+        Token: {token ? "****" + token.slice(-4) : "None"}
       </Typography>
       <Button
           variant="contained"

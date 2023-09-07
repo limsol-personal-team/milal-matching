@@ -1,6 +1,6 @@
 # Setup and build react client
 
-FROM node:19.6-alpine as client
+FROM node:20-alpine as client
 
 WORKDIR /client
 COPY client .

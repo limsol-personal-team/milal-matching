@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SigninQRCode = () => {
-  const basePath = "http://localhost:3000/checkin-auth/";
+  const checkinAuthPath = window.location.origin + "/checkin-auth/";
   const [qrCodeData, setQRCodeData] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
@@ -49,7 +49,7 @@ const SigninQRCode = () => {
         <QRCode
           size={300}
           onClick={handleQRCodeClick}
-          value={basePath + qrCodeData}
+          value={checkinAuthPath + qrCodeData}
         />
       ) : (
         <Button
