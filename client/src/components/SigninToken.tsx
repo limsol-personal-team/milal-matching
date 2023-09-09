@@ -36,9 +36,6 @@ const SigninToken = () => {
 
   return (
     <>
-      <Typography>
-        Token: {token ? "****" + token.slice(-4) : "None"}
-      </Typography>
       <Button
           variant="contained"
           size="medium"
@@ -52,6 +49,11 @@ const SigninToken = () => {
             "Generate Token"
           )}
       </Button>
+      <br></br>
+      <br></br>
+      <Typography>
+        Token: {token ? "****" + token.slice(-4) : "None"}
+      </Typography>
     </>
   );
 

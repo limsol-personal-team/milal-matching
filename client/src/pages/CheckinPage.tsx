@@ -10,6 +10,7 @@ import { useLocation } from "react-router-dom";
 import SigninForm from "../components/SigninForm";
 import { AUTH_REDIRECT } from "../utils/constants";
 
+
 const CheckInPage = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [googleInfo, setGoogleInfo] = useState({});
@@ -20,6 +21,7 @@ const CheckInPage = () => {
     const redirectPage = location.state && location.state.from;
     if (redirectPage == AUTH_REDIRECT) {
       setIsAuthRedirect(true);
+      window.history.replaceState({}, '');
     }
     const script = document.createElement("script");
     script.src = "https://accounts.google.com/gsi/client";

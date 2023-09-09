@@ -19,6 +19,7 @@ const SigninQRCode = () => {
       setIsLoading(true);
       const response = await axios.get("/api/auth/sign_in_token/");
       const token = response.data.token;
+      setIsLoading(false);
       setQRCodeData(token);
     } catch (error) {
       setErrorStatus(true);
@@ -45,27 +46,28 @@ const SigninQRCode = () => {
           An error occurred. Please try again.
         </Alert>
       </Snackbar>
-      {qrCodeData ? (
+      <Button
+        variant="contained"
+        size="medium"
+        onClick={() => {
+          handleSubmit();
+        }}
+      >
+        {isLoading ? (
+          <CircularProgress size={24} color="inherit" />
+        ) : (
+          "Generate QR"
+        )}
+      </Button>
+      <br></br>
+      <br></br>
+      {qrCodeData &&
         <QRCode
           size={300}
           onClick={handleQRCodeClick}
           value={checkinAuthPath + qrCodeData}
         />
-      ) : (
-        <Button
-          variant="contained"
-          size="medium"
-          onClick={() => {
-            handleSubmit();
-          }}
-        >
-          {isLoading ? (
-            <CircularProgress size={24} color="inherit" />
-          ) : (
-            "Generate QR"
-          )}
-        </Button>
-      )}
+      }
     </>
   );
 };
