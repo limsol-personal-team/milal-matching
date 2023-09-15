@@ -2,16 +2,19 @@ import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
-import Snackbar from "@mui/material/Snackbar";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
 import React, { useState } from "react";
+import AlertToaster from "./AlertToaster";
 
 const CheckInPage = (props: any) => {
   const { email, name } = props.googleInfo;
   const [submissionStatus, setSubmissionStatus] = useState(false);
-  const [errorStatus, setErrorStatus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Alerting
+  const [errorStatus, setErrorStatus] = useState(false);
+  const alertProps = { errorStatus, setErrorStatus}
 
   const textFieldStyles = {
     background: "white",
@@ -21,12 +24,11 @@ const CheckInPage = (props: any) => {
     const data = {
       email: email,
       name: name,
-      timestamp: new Date().toLocaleString(),
     };
     setIsLoading(true);
 
     axios
-      .post("/api/auth/sign_in_record/", data)
+      .post("/api/auth/sign_in_record", data)
       .then((response) => {
         setSubmissionStatus(true);
         setIsLoading(true);
@@ -37,22 +39,9 @@ const CheckInPage = (props: any) => {
       });
   };
 
-  const handleSnackbarClose = () => {
-    setErrorStatus(false);
-  };
-
   return (
     <>
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={errorStatus}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert onClose={handleSnackbarClose} severity="error">
-          An error occurred. Please try again.
-        </Alert>
-      </Snackbar>
+      <AlertToaster {...alertProps}/>
       {submissionStatus ? (
         <Alert severity="success">Check-in succeeded!</Alert>
       ) : (

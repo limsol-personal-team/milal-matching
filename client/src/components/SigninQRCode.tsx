@@ -6,46 +6,41 @@ import axios from "axios";
 import QRCode from "qrcode.react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AlertToaster from "./AlertToaster";
 
 const SigninQRCode = () => {
   const checkinAuthPath = window.location.origin + "/checkin-auth/";
   const [qrCodeData, setQRCodeData] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [errorStatus, setErrorStatus] = useState(false);
   const navigate = useNavigate();
 
+  // Alerting
+  const [errorStatus, setErrorStatus] = useState(false);
+  const alertProps = { errorStatus, setErrorStatus}
+
   const handleSubmit = async () => {
-    try {
-      setIsLoading(true);
-      const response = await axios.get("/api/auth/sign_in_token/");
-      const token = response.data.token;
-      setIsLoading(false);
-      setQRCodeData(token);
-    } catch (error) {
-      setErrorStatus(true);
-    }
+    setIsLoading(true);
+    axios
+      .post("/api/auth/sign_in_token")
+      .then((response) => {
+        const token = response.data.token;
+        setQRCodeData(token);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setErrorStatus(true);
+        setIsLoading(false);
+      })
   };
 
   const handleQRCodeClick = () => {
     navigate("/checkin-auth/" + qrCodeData);
   };
 
-  const handleSnackbarClose = () => {
-    setErrorStatus(false);
-  };
 
   return (
     <>
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={errorStatus}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert onClose={handleSnackbarClose} severity="error">
-          An error occurred. Please try again.
-        </Alert>
-      </Snackbar>
+      <AlertToaster {...alertProps}/>
       <Button
         variant="contained"
         size="medium"

@@ -10,6 +10,7 @@ import CheckInQRPage from "./pages/CheckinQRPage";
 import ErrorPage from "./pages/ErrorPage";
 import HomePage from "./pages/HomePage";
 import MatchingPage from "./pages/MatchingPage";
+import UserPage from "./pages/UserPage";
 
 // ----------------------------------------------------------------------
 
@@ -31,7 +32,7 @@ export default function Router() {
       children: [
         { element: <Navigate to="/ops/home" />, index: true },
         { path: "/ops/home", element: <HomePage /> },
-        { path: "/ops/matching", element: <MatchingPage /> },
+        { path: "/ops/users", element: <UserPage /> },
         { path: "/ops/checkin-qr", element: <CheckInQRPage /> },
       ],
     },

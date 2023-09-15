@@ -28,7 +28,9 @@
     "react-router-dom": "^6.15.0",
     "react-scripts": "5.0.1",
     "react-table": "^7.8.0",
+    "react-window": "^1.8.9",
     "typescript": "latest",
+    "uuid": "^9.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -57,6 +59,8 @@
   },
   "devDependencies": {
     "@types/react-table": "^7.7.14",
+    "@types/react-window": "^1.8.5",
+    "@types/uuid": "^9.0.3",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
     "prettier": "2.8.7"

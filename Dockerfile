@@ -24,4 +24,7 @@ COPY server /app/server
 EXPOSE 8000
 RUN pip install -r requirements.txt
 RUN python manage.py migrate
-CMD redis-server --daemonize yes && python manage.py runserver 0.0.0.0:8000
+CMD redis-server --daemonize yes && 
+    celery -A server worker --loglevel=INFO &&
+    celery -A server beat --loglevel=info &&
+    python manage.py runserver 0.0.0.0:8000

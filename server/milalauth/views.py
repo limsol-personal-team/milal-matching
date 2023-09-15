@@ -1,19 +1,13 @@
+from django.utils import timezone
 from django.shortcuts import render
 from django.core.cache import cache
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets
 
-
-from google.oauth2 import service_account
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-
 import uuid
-import os
+
+from utils.gsheets import SATURDAY_CHECKIN_SPREADSHEET_ID, get_gsheets_service
 
 # Create your views here.
 
@@ -21,8 +15,6 @@ import os
 class AuthViewSet(viewsets.ViewSet):
     SIGN_IN_CACHE_KEY = "SIGN_IN_CACHE_KEY"
     SIGN_IN_KEY_TTL = 60 * 60 * 24  # seconds
-    SPREADSHEET_ID = "1Z566UWaWeCIkUtND8hx7721963J2gUHzwFJN2_Nh-bk"
-    SCOPES = ["https://www.googleapis.com/auth/spreadsheets "]
 
     @action(
         detail=False,
@@ -65,24 +57,20 @@ class AuthViewSet(viewsets.ViewSet):
         url_name="sign_in_record",
     )
     def sign_in_record(self, request):
-        creds = service_account.Credentials.from_service_account_file(
-            "./milalauth/credentials.json"
-        )
         if request.method == "POST":
-            service = build("sheets", "v4", credentials=creds)
+            curr_time = timezone.localtime(timezone.now()).strftime(
+                "%Y-%m-%d %H:%M:%S%z"
+            )
             values = [
-                [
-                    request.data["name"],
-                    request.data["email"],
-                    request.data["timestamp"],
-                ],
+                [request.data["name"], request.data["email"], curr_time],
             ]
             body = {"values": values}
 
             # Call the Sheets API
+            service = get_gsheets_service()
             sheet = service.spreadsheets()
             sheet.values().append(
-                spreadsheetId=self.SPREADSHEET_ID,
+                spreadsheetId=SATURDAY_CHECKIN_SPREADSHEET_ID,
                 range="Sheet1!A:C",
                 valueInputOption="USER_ENTERED",
                 body=body,

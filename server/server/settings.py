@@ -25,7 +25,6 @@ SECRET_KEY = "907($*h%l2en+^$l%(&u@&rd10wjquxf5*r*e$8ncy-m+b3lqb"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = ["*"]
 
 
@@ -34,7 +33,7 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "users.apps.UsersConfig",
-    "classes.apps.ClassesConfig",
+    "records.apps.RecordsConfig",
     "milalauth.apps.MilalAuthConfig",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -97,16 +96,15 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-    }
+# Celery configuration
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
+CELERY_TASK_PUBLISH_RETRY_POLICY = {
+    "max_retries": 3,
+    "interval_start": 0,
+    "interval_step": 1,
+    "interval_max": 2,
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -146,3 +144,10 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(REACT_BUILD_DIR, "static")]
+
+
+# Import env dependent settings
+if os.getenv("PROD_ENV") == "True":
+    from config.prod_settings import *
+else:
+    from config.dev_settings import *

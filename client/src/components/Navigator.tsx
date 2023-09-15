@@ -18,8 +18,8 @@ const categories = [
     id: "Pages",
     children: [
       {
-        id: "Matching",
-        slug: "matching",
+        id: "Users",
+        slug: "users",
         icon: <PeopleIcon />,
       },
       {

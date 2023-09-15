@@ -11,7 +11,7 @@ const SigninToken = () => {
   
   useEffect(() => {
     axios
-      .get("/api/auth/sign_in_token/")
+      .get("/api/auth/sign_in_token")
       .then((response) => {
         setToken(response.data.token)
       })
@@ -24,7 +24,7 @@ const SigninToken = () => {
   const handleSubmit = () => {
     setIsLoading(true);
     axios
-      .post("/api/auth/sign_in_token/")
+      .post("/api/auth/sign_in_token")
       .then((response) => {
         setToken(response.data.token)
         setIsLoading(false);
