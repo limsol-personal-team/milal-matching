@@ -82,7 +82,7 @@ export default function UserDetail() {
     return (
       <ListItem style={style} sx={{ border: '1px solid #808080' }} key={index} component="div" disablePadding>
         <ListItemText 
-          primary={`Created: ${item.service_date}`} 
+          primary={`Created: ${item.created_at}`} 
           secondary={
             <Typography variant="body2">
                 Service Date: {item.service_date}
