@@ -3,6 +3,7 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useEffect, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
@@ -117,7 +118,7 @@ export default function UserDetail() {
 
   return (
     <>
-      <FormControl sx={{ m: 1, minWidth: 120, maxWidth: 300 }}>
+      <FormControl sx={{ marginRight:1, width:120 }}>
         <InputLabel shrink htmlFor="select-multiple-native">
           Names
         </InputLabel>
@@ -145,7 +146,7 @@ export default function UserDetail() {
           ))}
         </Select>
       </FormControl>
-      <FormControl sx={{ m: 1, minWidth: 120, maxWidth: 300 }}>
+      <FormControl sx={{ width: 170 }}>
         <InputLabel shrink htmlFor="select-multiple-native">
           Emails
         </InputLabel>
@@ -174,6 +175,7 @@ export default function UserDetail() {
         </Select>
       </FormControl>
       <br></br>
+      <br></br>
       <Button 
         type="submit" 
         variant="contained"
@@ -190,7 +192,7 @@ export default function UserDetail() {
       </Typography>
       { emailData && Object.keys(emailData).map((key) => (
           // @ts-ignore for now
-          <p key={emailId}>{key}: {emailData[key] && emailData[key].toString()}</p> // Convert to string for bools
+          <p key={uuid()}>{key}: {emailData[key] && emailData[key].toString()}</p> // Convert to string for bools
       ))}
     </>
   );

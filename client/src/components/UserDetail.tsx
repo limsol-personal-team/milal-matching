@@ -99,7 +99,7 @@ export default function UserDetail() {
 
   return (
     <>
-      <FormControl sx={{ m: 1, minWidth: 120, maxWidth: 300 }}>
+      <FormControl sx={{ width: 120 }}>
         <InputLabel shrink htmlFor="select-multiple-native">
           Names
         </InputLabel>
