@@ -7,6 +7,12 @@ import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import { Box, ListItem, ListItemText, MenuItem, Typography } from '@mui/material';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { Avatar, Divider, List, Skeleton } from 'antd';
+
+import '../static/Antdstyle.css';
+import ScrollList from './ScrollList';
+
 
 interface VolunteerData {
   id: string;
@@ -41,6 +47,18 @@ export default function UserDetail() {
   const [userId, setUserId] = useState([]);
   const [userData, setUserData] = useState({});
   const [userVolunteerHours, setUserVolunteerHours] = useState<VolunteerHoursData[]>([])
+  const [selectedId, setSelectedId] = useState("");
+
+  // @ts-ignore for now
+  const handleOptionClick = (id, dataMap, setIdFn, setDataFn) => {
+    setIdFn([id]);
+    setDataFn(dataMap[id])
+    axios
+      .get(`/api/volunteer_hours?volunteer=${id}`)
+      .then((response: {data: VolunteerHoursData[]}) => {
+        setUserVolunteerHours(response.data);
+      })
+  }
 
   useEffect(() => {
     axios
@@ -49,7 +67,7 @@ export default function UserDetail() {
         let nameList = response.data.map(({ first_name, last_name, id }) => ( 
           { 
             id: id,
-            fullName: first_name + " " + last_name,
+            display: first_name + " " + last_name,
           })
         );
         let usersDataMap = response.data.reduce((obj, item) => {
@@ -65,16 +83,14 @@ export default function UserDetail() {
       });
   }, []);
 
-  // @ts-ignore for now
-  const handleOptionClick = (id, dataMap, setIdFn, setDataFn) => {
-    setIdFn([id]);
-    setDataFn(dataMap[id])
-    axios
-      .get(`/api/volunteer_hours?volunteer=${id}`)
-      .then((response: {data: VolunteerHoursData[]}) => {
-        setUserVolunteerHours(response.data);
-      })
+  const scrollListProps = {
+    itemList: nameList,
+    itemDataMap: usersDataMap,
+    setItemId: setUserId,
+    setItemData: setUserData,
+    handleOptionClick: handleOptionClick
   }
+
 
   const renderRow = (props: ListChildComponentProps) => {
     const {data, index, style} = props; // style is implictily passed by react-window. prevents jittering
@@ -99,35 +115,9 @@ export default function UserDetail() {
 
   return (
     <>
-      <FormControl sx={{ width: 120 }}>
-        <InputLabel shrink htmlFor="select-multiple-native">
-          Names
-        </InputLabel>
-        <Select
-          multiple
-          native
-          value={userId}
-          // @ts-ignore Typings are not considering `native`
-          label="Native"
-          inputProps={{
-            id: 'select-multiple-native',
-          }}
-        >
-          {/* @ts-ignore */}
-          {nameList.map(({id, fullName}) => ( 
-            // @ts-ignore for now
-            <option 
-              key={id} 
-              value={id}
-              onClick={() => handleOptionClick(
-                id, usersDataMap, setUserId, setUserData)}
-            >
-              {fullName}
-            </option>
-          ))}
-        </Select>
-      </FormControl>
-      <br></br>
+      <ScrollList 
+        {...scrollListProps}
+      />
       <br></br>
       <Typography variant="h6" sx={{ textDecoration: 'underline' }} gutterBottom>
         User Data: 

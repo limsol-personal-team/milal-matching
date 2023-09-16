@@ -7,6 +7,7 @@ import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
+import ScrollList from './ScrollList';
 
 interface EmailAccountData {
   id: string;
@@ -52,7 +53,7 @@ export default function UserDetail() {
         let emailList = response.data.map(({ id, email }) => ( 
           { 
             id: id,
-            email: email
+            display: email
           })
         );
         let emailsDataMap = response.data.reduce((obj, item) => {
@@ -75,7 +76,7 @@ export default function UserDetail() {
         let nameList = response.data.map(({ first_name, last_name, id }) => ( 
           { 
             id: id,
-            fullName: first_name + " " + last_name,
+            display: first_name + " " + last_name,
           })
         );
         let usersDataMap = response.data.reduce((obj, item) => {
@@ -115,66 +116,32 @@ export default function UserDetail() {
     pullEmailAccounts();
     pullVolunteer();
   }, []);
+  
+  const scrollListNameProps = {
+    itemList: nameList,
+    itemDataMap: usersDataMap,
+    setItemId: setUserId,
+    setItemData: setUserData,
+    handleOptionClick: handleOptionClick
+  }
+  
+  const scrollListEmailProps = {
+    itemList: emailList,
+    itemDataMap: emailsDataMap,
+    setItemId: setEmailId,
+    setItemData: setEmailData,
+    handleOptionClick: handleOptionClick
+  }
 
   return (
     <>
-      <FormControl sx={{ marginRight:1, width:120 }}>
-        <InputLabel shrink htmlFor="select-multiple-native">
-          Names
-        </InputLabel>
-        <Select
-          multiple
-          native
-          value={userId}
-          // @ts-ignore Typings are not considering `native`
-          label="Native"
-          inputProps={{
-            id: 'select-multiple-native',
-          }}
-        >
-          {/* @ts-ignore */}
-          {nameList.map(({id, fullName}) => ( 
-            // @ts-ignore for now
-            <option 
-              key={id} 
-              value={id}
-              onClick={() => handleOptionClick(
-                id, usersDataMap, setUserId, setUserData)}
-            >
-              {fullName}
-            </option>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl sx={{ width: 170 }}>
-        <InputLabel shrink htmlFor="select-multiple-native">
-          Emails
-        </InputLabel>
-        <Select
-          multiple
-          native
-          value={emailId}
-          // @ts-ignore Typings are not considering `native`
-          label="Native"
-          inputProps={{
-            id: 'select-multiple-native',
-          }}
-        >
-          {/* @ts-ignore */}
-          {emailList.map(({id, email}) => ( 
-            // @ts-ignore for now
-            <option 
-              key={id} 
-              value={id}
-              onClick={() => handleOptionClick(
-                id, emailsDataMap, setEmailId, setEmailData)}
-            >
-              {email}
-            </option>
-          ))}
-        </Select>
-      </FormControl>
+      <ScrollList 
+        {...scrollListNameProps}
+      />
       <br></br>
+      <ScrollList 
+        {...scrollListEmailProps}
+      />
       <br></br>
       <Button 
         type="submit" 
