@@ -82,10 +82,14 @@ export default function UserDetail() {
     return (
       <ListItem style={style} sx={{ border: '1px solid #808080' }} key={index} component="div" disablePadding>
         <ListItemText 
-          primary={`${item.service_date}`} 
+          primary={`Created: ${item.service_date}`} 
           secondary={
             <Typography variant="body2">
-                {item.service_type} - {item.hours}
+                Service Date: {item.service_date}
+                <br></br>
+                Type: {item.service_type} 
+                <br></br>
+                Hours: {item.hours}
             </Typography>
         } 
         />
@@ -123,6 +127,11 @@ export default function UserDetail() {
           ))}
         </Select>
       </FormControl>
+      <br></br>
+      <br></br>
+      <Typography variant="h6" sx={{ textDecoration: 'underline' }} gutterBottom>
+        User Data: 
+      </Typography>
       <div>
         { userData && Object.keys(userData).map((key) => (
           // @ts-ignore for now
@@ -136,7 +145,7 @@ export default function UserDetail() {
           <FixedSizeList
             height={400}
             width={360}
-            itemSize={46}
+            itemSize={90}
             itemCount={userVolunteerHours.length}
             itemData={userVolunteerHours}
           >

@@ -9,11 +9,15 @@ RUN npm run build
 
 # Build new image
 
-FROM python:3.10-alpine
+FROM python:3.10-slim
 
 # Install redis
 
-RUN apk update && apk add redis
+RUN apt-get update && apt-get install -y redis
+
+# Install PostGres depedencies for psycop
+
+RUN apt install -y python3-dev libpq-dev gcc
 
 # Setup and start django server. Expose 8000
 
@@ -24,7 +28,7 @@ COPY server /app/server
 EXPOSE 8000
 RUN pip install -r requirements.txt
 RUN python manage.py migrate
-CMD redis-server --daemonize yes && 
-    celery -A server worker --loglevel=INFO &&
-    celery -A server beat --loglevel=info &&
+CMD redis-server --daemonize yes && \ 
+    celery -A server worker --loglevel=INFO --detach && \
+    celery -A server beat --loglevel=info --detach && \
     python manage.py runserver 0.0.0.0:8000

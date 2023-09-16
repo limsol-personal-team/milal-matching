@@ -51,16 +51,16 @@ export default function UserPage() {
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Detail" {...a11yProps(0)} />
-          <Tab label="Create" {...a11yProps(1)} />
+          <Tab label="Create" {...a11yProps(0)} />
+          <Tab label="Detail" {...a11yProps(1)} />
           <Tab label="Link" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <UserDetail />
+        <UserCreate />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <UserCreate />
+        <UserDetail />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <UserLink />

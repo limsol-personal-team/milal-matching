@@ -1,16 +1,18 @@
 # local env
 **/venv
 /node_modules
+.env
 # python cache
 **/__pycache__
 **/*.pyc
 
 # django dev db
 *.sqlite3
+*.db
 
 # user config
 /.vscode
 /.python-version
 /.husky
 **/credentials.json
-
+commands.md

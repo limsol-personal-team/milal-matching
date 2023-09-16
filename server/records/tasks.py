@@ -83,9 +83,8 @@ def clear_saturday_checkin_data(self):
 ## Cronjobs
 
 app.conf.beat_schedule = {
-    "run-task-every-sunday-at-8pm": {
+    "process_saturday_checkin_data": {
         "task": "records.tasks.process_saturday_checkin_data",
-        "schedule": 30.0
-        # "schedule": crontab(hour=20, minute=0, day_of_week=0),
+        "schedule": crontab(hour=20, minute=0, day_of_week=6),
     },
 }

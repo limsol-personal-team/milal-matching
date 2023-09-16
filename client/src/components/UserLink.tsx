@@ -5,6 +5,7 @@ import Select from '@mui/material/Select';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Button from '@mui/material/Button';
+import { Typography } from '@mui/material';
 
 interface EmailAccountData {
   id: string;
@@ -96,6 +97,8 @@ export default function UserDetail() {
       .then((response) => {
         // @ts-ignore for now
         setEmailList(emailList.filter(item => item.id != emailId));
+        setEmailData({})
+        setEmailId([])
       })
       .catch((error) => {
       })
@@ -135,7 +138,7 @@ export default function UserDetail() {
               key={id} 
               value={id}
               onClick={() => handleOptionClick(
-                id, usersDataMap, setUserId, setData)}
+                id, usersDataMap, setUserId, setUserData)}
             >
               {fullName}
             </option>
@@ -180,6 +183,15 @@ export default function UserDetail() {
       >
         Link
       </Button>
+      <br></br>
+      <br></br>
+      <Typography variant="h6" sx={{ textDecoration: 'underline' }} gutterBottom>
+        Email Data: 
+      </Typography>
+      { emailData && Object.keys(emailData).map((key) => (
+          // @ts-ignore for now
+          <p key={emailId}>{key}: {emailData[key] && emailData[key].toString()}</p> // Convert to string for bools
+      ))}
     </>
   );
 }
