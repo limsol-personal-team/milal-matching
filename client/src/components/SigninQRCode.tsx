@@ -21,11 +21,15 @@ const SigninQRCode = () => {
   const handleSubmit = async () => {
     setIsLoading(true);
     axios
-      .post("/api/auth/sign_in_token")
+      .get("/api/auth/sign_in_token")
       .then((response) => {
         const token = response.data.token;
-        setQRCodeData(token);
         setIsLoading(false);
+        if (!token) {
+          setErrorStatus(true);
+          return;
+        }
+        setQRCodeData(token);
       })
       .catch((error) => {
         setErrorStatus(true);
