@@ -11,6 +11,7 @@ import ErrorPage from "./pages/ErrorPage";
 import HomePage from "./pages/HomePage";
 import MatchingPage from "./pages/MatchingPage";
 import UserPage from "./pages/UserPage";
+import HoursPage from "./pages/HoursPage";
 
 // ----------------------------------------------------------------------
 
@@ -33,6 +34,7 @@ export default function Router() {
         { element: <Navigate to="/ops/home" />, index: true },
         { path: "/ops/home", element: <HomePage /> },
         { path: "/ops/users", element: <UserPage /> },
+        { path: "/ops/volunteer-hours", element: <HoursPage /> },
         { path: "/ops/checkin-qr", element: <CheckInQRPage /> },
       ],
     },

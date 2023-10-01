@@ -1,12 +1,9 @@
+import { Typography } from '@mui/material';
+import Button from '@mui/material/Button';
+import axios from 'axios';
 import * as React from 'react';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
-import axios from 'axios';
-import Button from '@mui/material/Button';
-import { Typography } from '@mui/material';
 import ScrollList from './ScrollList';
 
 interface EmailAccountData {
@@ -34,14 +31,14 @@ export default function UserDetail() {
 
   // Pull initial data into structs
   const [emailList, setEmailList] = useState<Object[]>([]);
-  const [emailsDataMap, setEmailsDataMap] = useState({});
+  const [emailsDataMap, setEmailsDataMap] = useState<any>({});
   // Update selected entity displayed
-  const [emailId, setEmailId] = useState<String[]>([]);
+  const [emailId, setEmailId] = useState<String>("");
   const [emailData, setEmailData] = useState({});
 
   // Pull initial data into structs
   const [nameList, setNameList] = useState<Object[]>([]);
-  const [usersDataMap, setData] = useState({});
+  const [usersDataMap, setData] = useState<any>({});
   // Update selected entity displayed
   const [userId, setUserId] = useState<String[]>([]);
   const [userData, setUserData] = useState({});
@@ -93,44 +90,47 @@ export default function UserDetail() {
   }
 
   const handleSubmit = () => {
-    let body = { "user": userId[0] };
+    if (!emailId) {
+      return;
+    }
+    let body = { "user": userId };
     axios
       .patch("/api/email_accounts/" + emailId, body)
       .then((response) => {
         // @ts-ignore for now
-        setEmailList(emailList.filter(item => item.id != emailId));
+        setEmailList(emailList.filter(item => item.id !== emailId));
         setEmailData({})
-        setEmailId([])
+        setEmailId("");
       })
       .catch((error) => {
       })
   }
 
   // @ts-ignore for now
-  const handleOptionClick = (id, dataMap, setIdFn, setDataFn) => {
-    setIdFn([id]);
-    setDataFn(dataMap[id])
+  const handleNameOptionClick = (idList) => {
+    setUserId(idList[0]);
+    setUserData(usersDataMap[idList[0]]);
+  }
+
+  // @ts-ignore for now
+  const handleEmailOptionClick = (idList) => {
+    setEmailId(idList[0]);
+    setEmailData(emailsDataMap[idList[0]]);
   }
 
   useEffect(() => {
     pullEmailAccounts();
     pullVolunteer();
   }, []);
-  
+
   const scrollListNameProps = {
     itemList: nameList,
-    itemDataMap: usersDataMap,
-    setItemId: setUserId,
-    setItemData: setUserData,
-    handleOptionClick: handleOptionClick
+    handleOptionClick: handleNameOptionClick
   }
   
   const scrollListEmailProps = {
     itemList: emailList,
-    itemDataMap: emailsDataMap,
-    setItemId: setEmailId,
-    setItemData: setEmailData,
-    handleOptionClick: handleOptionClick
+    handleOptionClick: handleEmailOptionClick
   }
 
   return (

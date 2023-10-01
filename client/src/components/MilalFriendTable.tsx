@@ -1,7 +1,7 @@
-import React from "react";
-import { Space, Table, Tag } from "antd";
-import type { ColumnsType } from "antd/es/table";
 import { Box } from "@mui/material";
+import { Space, Table } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import React from "react";
 import "../static/MilalFriendTable.css";
 
 interface DataType {

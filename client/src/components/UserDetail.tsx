@@ -1,14 +1,9 @@
-import * as React from 'react';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { useEffect, useState } from 'react';
-import { v4 as uuid } from 'uuid';
+import { Box, ListItem, ListItemText, Typography } from '@mui/material';
 import axios from 'axios';
-import { Box, ListItem, ListItemText, MenuItem, Typography } from '@mui/material';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import { Avatar, Divider, List, Skeleton } from 'antd';
+import { v4 as uuid } from 'uuid';
 
 import '../static/Antdstyle.css';
 import ScrollList from './ScrollList';
@@ -41,20 +36,19 @@ interface VolunteerHoursData {
 export default function UserDetail() {
   // Pull initial data into structs
   const [nameList, setNameList] = useState<Object[]>([]);
-  const [usersDataMap, setData] = useState({});
+  const [usersDataMap, setData] = useState<any>({});
 
   // Update specified user displayed
-  const [userId, setUserId] = useState([]);
+  const [userId, setUserId] = useState<Object[]>([]);
   const [userData, setUserData] = useState({});
   const [userVolunteerHours, setUserVolunteerHours] = useState<VolunteerHoursData[]>([])
-  const [selectedId, setSelectedId] = useState("");
 
   // @ts-ignore for now
-  const handleOptionClick = (id, dataMap, setIdFn, setDataFn) => {
-    setIdFn([id]);
-    setDataFn(dataMap[id])
+  const handleOptionClick = (idList) => {
+    setUserId(idList[0]);
+    setUserData(usersDataMap[idList[0]]);
     axios
-      .get(`/api/volunteer_hours?volunteer=${id}`)
+      .get(`/api/volunteer_hours?volunteer=${idList[0]}`)
       .then((response: {data: VolunteerHoursData[]}) => {
         setUserVolunteerHours(response.data);
       })
@@ -85,9 +79,6 @@ export default function UserDetail() {
 
   const scrollListProps = {
     itemList: nameList,
-    itemDataMap: usersDataMap,
-    setItemId: setUserId,
-    setItemData: setUserData,
     handleOptionClick: handleOptionClick
   }
 

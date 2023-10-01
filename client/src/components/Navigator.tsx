@@ -2,6 +2,7 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import HomeIcon from "@mui/icons-material/Home";
 import PeopleIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
+import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Drawer, { DrawerProps } from "@mui/material/Drawer";
@@ -21,6 +22,11 @@ const categories = [
         id: "Users",
         slug: "users",
         icon: <PeopleIcon />,
+      },
+      {
+        id: "Hours",
+        slug: "volunteer-hours",
+        icon: <AccessTimeFilledIcon />,
       },
       {
         id: "Check-In QR",

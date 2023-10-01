@@ -1,7 +1,5 @@
-import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
-import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
 import QRCode from "qrcode.react";
 import React, { useState } from "react";

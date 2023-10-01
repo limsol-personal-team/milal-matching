@@ -1,10 +1,10 @@
-import * as React from "react";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import {
   randomCreatedDate,
   randomTraderName,
   randomUpdatedDate,
 } from "@mui/x-data-grid-generator";
+import * as React from "react";
 
 const columns: GridColDef[] = [
   {

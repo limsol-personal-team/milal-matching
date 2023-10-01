@@ -1,4 +1,7 @@
 from rest_framework import viewsets
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from records.models import MilalMatching, VolunteerHours
 from records.serializers import MilalMatchingSerializer, VolunteerHoursSerializer
 
@@ -27,3 +30,24 @@ class VolunteerHoursViewSet(viewsets.ModelViewSet):
         "volunteer": ["exact", "isnull"],
         "email": ["exact"],
     }
+
+    @action(
+        detail=False,
+        methods=["post"],
+        url_path="bulk_create",
+        url_name="bulk_create",
+    )
+    def bulk_create(self, request):
+
+        volunteer_ids = request.data.pop("volunteer_ids")
+        bulk_create_list = [{"volunteer": vId, **request.data} for vId in volunteer_ids]
+
+        # Copied from CreateModelMixin
+        serializer = self.get_serializer(data=bulk_create_list, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )

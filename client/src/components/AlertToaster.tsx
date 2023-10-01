@@ -1,5 +1,5 @@
-import { Alert, Snackbar } from '@mui/material'
-import React, { useEffect } from 'react'
+import { Alert, Snackbar } from '@mui/material';
+import React from 'react';
 
 // @ts-ignore for now
 export default function AlertToaster(props) {

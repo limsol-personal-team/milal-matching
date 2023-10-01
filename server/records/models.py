@@ -16,10 +16,14 @@ class VolunteerHours(BaseModel):
 
     # Service Type / Hours Attributed
     SATURDAY_AGAPE = ("saturday_agape", 4.5)
+    ORIENTATION = ("orientation", None)
+    BACKFILL = ("backfill", None)
     OTHER = ("other", None)
 
     SERVICE_TYPES = (
         (SATURDAY_AGAPE[0], "Saturday Agape"),
+        (ORIENTATION[0], "Orientation"),
+        (BACKFILL[0], "Backfill"),
         (OTHER[0], "Other"),
     )
 

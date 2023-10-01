@@ -9,7 +9,7 @@ class VolunteerViewSet(viewsets.ModelViewSet):
     API endpoint that allows volunteers to be viewed or edited.
     """
 
-    queryset = Volunteer.objects.all().order_by("-first_name")
+    queryset = Volunteer.objects.all().order_by("first_name")
     serializer_class = VolunteerSerializer
 
 
@@ -18,7 +18,7 @@ class MilalFriendViewSet(viewsets.ModelViewSet):
     API endpoint that allows milal friends to be viewed or edited.
     """
 
-    queryset = MilalFriend.objects.all().order_by("-first_name")
+    queryset = MilalFriend.objects.all().order_by("first_name")
     serializer_class = MilalFriendSerializer
 
 

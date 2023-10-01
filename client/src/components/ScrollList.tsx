@@ -1,19 +1,33 @@
+import { List, Skeleton } from 'antd';
 import React, { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Avatar, Divider, List, Skeleton } from 'antd';
 import '../static/Antdstyle.css';
 
 export default function ScrollList(props: any) {
 
-  const [selectedId, setSelectedId] = useState("");
-  
   const {
     itemList,
-    itemDataMap,
-    setItemId,
-    setItemData,
     handleOptionClick,
+    isMultiSelect = false
   } = props;
+
+  const [selectedIds, setSelectedIds] = useState<any>([]);
+
+  const updateSelectedIds = (id : any) => {
+    let tempIds: any[] = [];
+    if (isMultiSelect) {
+      tempIds = [...selectedIds];
+      if(selectedIds.includes(id)) {
+        tempIds.splice(tempIds.indexOf(id), 1);
+      } else {
+        tempIds.push(id);
+      }
+    } else {
+      tempIds.push(id);
+    }
+    setSelectedIds(tempIds);
+    handleOptionClick(tempIds);
+  }
 
   return (
       <div
@@ -39,11 +53,11 @@ export default function ScrollList(props: any) {
             renderItem={(item : {id: string, fullName: string}) => (
               <List.Item
                 style={{borderLeft: 50}}
-                className= {selectedId === item.id ? "ant-menu-item-selected" : ""}
+                className= {selectedIds.includes(item.id) ? "ant-menu-item-selected" : ""}
                 key={item.id}
                 onClick={() => {
-                  setSelectedId(item.id);
-                  handleOptionClick(item.id, itemDataMap, setItemId, setItemData)}}
+                  updateSelectedIds(item.id);
+                  }}
               >
                 <List.Item.Meta
                   style={{marginLeft: 5}}
