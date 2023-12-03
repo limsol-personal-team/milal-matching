@@ -1,15 +1,14 @@
 import { Box, Button, FormControl, ListItem, ListItemText, MenuItem, Stack, TextField, Typography } from '@mui/material';
-import axios from 'axios';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { FixedSizeList, ListChildComponentProps } from 'react-window';
-import { v4 as uuid } from 'uuid';
 
 import '../static/Antdstyle.css';
 import ScrollList from './ScrollList';
 import AlertToaster from './AlertToaster';
 import { SERVICE_TYPES } from '../utils/constants';
 import { convertToDateTimeISO } from '../utils/dateTime';
+import { getVolunteerData, postVolunteerHoursBulkCreate } from '../utils/serverFunctions';
+import { useAuth0 } from '@auth0/auth0-react';
 
 
 interface VolunteerData {
@@ -45,7 +44,7 @@ const emptyFormValues = {
 };
 
 export default function HoursCreate() {
-
+  const { getAccessTokenSilently } = useAuth0();
 
   const [formValues, setFormValues] = useState<any>(emptyFormValues);
 
@@ -74,7 +73,7 @@ export default function HoursCreate() {
     });
   };
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     let filledData : any = Object.keys(formValues).reduce((obj, key) => {
       // @ts-ignore for now
@@ -86,38 +85,38 @@ export default function HoursCreate() {
       return obj;
     }, {});
     filledData["volunteer_ids"] = userIds;
-    axios
-      .post("/api/volunteer_hours/bulk_create", filledData)
-      .then((response) => {
-        setFormValues(emptyFormValues);
-        setSuccessStatus(true)
-      })
-      .catch((error) => {
-        setErrorStatus(true);
-      });
+    const authToken = await getAccessTokenSilently();
+    const res = await postVolunteerHoursBulkCreate(authToken, filledData);
+    if (res.error) {
+      setErrorStatus(true);
+    } else {
+      setFormValues(emptyFormValues);
+      setSuccessStatus(true)
+    }
   };
 
   useEffect(() => {
-    axios
-      .get("/api/volunteers")
-      .then((response: {data: VolunteerData[]}) => {
-        let nameList = response.data.map(({ first_name, last_name, id }) => ( 
+    const fetchData = async () => {
+      const token = await getAccessTokenSilently();
+      const res = await getVolunteerData(token);
+      if (!res.error) {
+        let nameList = res.data.map(({ first_name, last_name, id }: VolunteerData) => ( 
           { 
             id: id,
             display: first_name + " " + last_name,
           })
         );
-        let usersDataMap = response.data.reduce((obj, item) => {
-          // @ts-ignore for now
+        // @ts-ignore for now
+        let usersDataMap = res.data.reduce((obj, item) => {
           obj[item.id] = item;
           return obj;
         }, {});
         // Initialize data structs
         setNameList(nameList);
         setData(usersDataMap);
-      })
-      .catch((error) => {
-      });
+      }
+    }
+    fetchData();
   }, []);
 
   const scrollListProps = {

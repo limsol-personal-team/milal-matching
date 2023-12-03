@@ -1,12 +1,13 @@
 import { Box, ListItem, ListItemText, Typography } from '@mui/material';
-import axios from 'axios';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import { v4 as uuid } from 'uuid';
+import { getVolunteerData, getVolunteerHours } from '../utils/serverFunctions';
 
 import '../static/Antdstyle.css';
 import ScrollList from './ScrollList';
+import { useAuth0 } from '@auth0/auth0-react';
 
 
 interface VolunteerData {
@@ -34,6 +35,7 @@ interface VolunteerHoursData {
 }
 
 export default function UserDetail() {
+  const { getAccessTokenSilently } = useAuth0();
   // Pull initial data into structs
   const [nameList, setNameList] = useState<Object[]>([]);
   const [usersDataMap, setData] = useState<any>({});
@@ -44,37 +46,39 @@ export default function UserDetail() {
   const [userVolunteerHours, setUserVolunteerHours] = useState<VolunteerHoursData[]>([])
 
   // @ts-ignore for now
-  const handleOptionClick = (idList) => {
+  const handleOptionClick = async (idList) => {
     setUserId(idList[0]);
     setUserData(usersDataMap[idList[0]]);
-    axios
-      .get(`/api/volunteer_hours?volunteer=${idList[0]}`)
-      .then((response: {data: VolunteerHoursData[]}) => {
-        setUserVolunteerHours(response.data);
-      })
+    const authToken = await getAccessTokenSilently();
+    const res = await getVolunteerHours(authToken, idList[0]);
+    if (!res.error) {
+      setUserVolunteerHours(res.data);
+    }
+  }
+  
+  const pullVolunteer = async () => {
+    const authToken = await getAccessTokenSilently();
+    const res = await getVolunteerData(authToken);
+    if (!res.error) {
+      let nameList = res.data.map(({ first_name, last_name, id }: VolunteerData) => ( 
+        { 
+          id: id,
+          display: first_name + " " + last_name,
+        })
+      );
+        // @ts-ignore for now
+      let usersDataMap = res.data.reduce((obj, item) => {
+        obj[item.id] = item;
+        return obj;
+      }, {});
+      // Initialize data structs
+      setNameList(nameList);
+      setData(usersDataMap);
+    }
   }
 
   useEffect(() => {
-    axios
-      .get("/api/volunteers")
-      .then((response: {data: VolunteerData[]}) => {
-        let nameList = response.data.map(({ first_name, last_name, id }) => ( 
-          { 
-            id: id,
-            display: first_name + " " + last_name,
-          })
-        );
-        let usersDataMap = response.data.reduce((obj, item) => {
-          // @ts-ignore for now
-          obj[item.id] = item;
-          return obj;
-        }, {});
-        // Initialize data structs
-        setNameList(nameList);
-        setData(usersDataMap);
-      })
-      .catch((error) => {
-      });
+    pullVolunteer()
   }, []);
 
   const scrollListProps = {

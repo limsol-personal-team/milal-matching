@@ -1,10 +1,11 @@
 import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
-import axios from 'axios';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import ScrollList from './ScrollList';
+import { getEmailAccounts, getVolunteerData, patchEmailAccounts } from '../utils/serverFunctions';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface EmailAccountData {
   id: string;
@@ -28,7 +29,7 @@ interface VolunteerData {
 }
 
 export default function UserDetail() {
-
+  const { getAccessTokenSilently } = useAuth0();
   // Pull initial data into structs
   const [emailList, setEmailList] = useState<Object[]>([]);
   const [emailsDataMap, setEmailsDataMap] = useState<any>({});
@@ -43,67 +44,62 @@ export default function UserDetail() {
   const [userId, setUserId] = useState<String[]>([]);
   const [userData, setUserData] = useState({});
   
-  const pullEmailAccounts = () => {
-    axios
-      .get("/api/email_accounts?user__isnull=true")
-      .then((response: {data: EmailAccountData[]}) => {
-        let emailList = response.data.map(({ id, email }) => ( 
-          { 
-            id: id,
-            display: email
-          })
-        );
-        let emailsDataMap = response.data.reduce((obj, item) => {
-          // @ts-ignore for now
-          obj[item.id] = item;
-          return obj;
-        }, {});
-        // initialize data structs
-        setEmailList(emailList);
-        setEmailsDataMap(emailsDataMap);
-      })
-      .catch((error) => {
-      });
+  const pullEmailAccounts = async () => {
+    const authToken = await getAccessTokenSilently();
+    const queryString = "user__isnull=true";
+    const res = await getEmailAccounts(authToken, queryString)
+    if (!res.error) {
+      let emailList = res.data.map(({ id, email } : EmailAccountData) => ( 
+        { 
+          id: id,
+          display: email
+        })
+      );
+      // @ts-ignore for now
+      let emailsDataMap = res.data.reduce((obj, item) => {
+        obj[item.id] = item;
+        return obj;
+      }, {});
+      // initialize data structs
+      setEmailList(emailList);
+      setEmailsDataMap(emailsDataMap);
+    }
   }
   
-  const pullVolunteer = () => {
-    axios
-      .get("/api/volunteers")
-      .then((response: {data: VolunteerData[]}) => {
-        let nameList = response.data.map(({ first_name, last_name, id }) => ( 
-          { 
-            id: id,
-            display: first_name + " " + last_name,
-          })
-        );
-        let usersDataMap = response.data.reduce((obj, item) => {
-          // @ts-ignore for now
-          obj[item.id] = item;
-          return obj;
-        }, {});
-        // Initialize data structs
-        setNameList(nameList);
-        setData(usersDataMap);
-      })
-      .catch((error) => {
-      });
+  const pullVolunteer = async () => {
+    const authToken = await getAccessTokenSilently();
+    const res = await getVolunteerData(authToken);
+    if (!res.error) {
+      let nameList = res.data.map(({ first_name, last_name, id }: VolunteerData) => ( 
+        { 
+          id: id,
+          display: first_name + " " + last_name,
+        })
+      );
+        // @ts-ignore for now
+      let usersDataMap = res.data.reduce((obj, item) => {
+        obj[item.id] = item;
+        return obj;
+      }, {});
+      // Initialize data structs
+      setNameList(nameList);
+      setData(usersDataMap);
+    }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!emailId) {
       return;
     }
     let body = { "user": userId };
-    axios
-      .patch("/api/email_accounts/" + emailId, body)
-      .then((response) => {
-        // @ts-ignore for now
-        setEmailList(emailList.filter(item => item.id !== emailId));
-        setEmailData({})
-        setEmailId("");
-      })
-      .catch((error) => {
-      })
+    const authToken = await getAccessTokenSilently();
+    const res = await patchEmailAccounts(authToken, emailId, body);
+    if (!res.error) {
+      // @ts-ignore for now
+      setEmailList(emailList.filter(item => item.id !== emailId));
+      setEmailData({})
+      setEmailId("");
+    }
   }
 
   // @ts-ignore for now

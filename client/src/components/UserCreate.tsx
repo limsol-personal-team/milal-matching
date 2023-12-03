@@ -1,7 +1,8 @@
 import { Button, FormControl, Stack, TextField } from '@mui/material';
-import axios from 'axios';
 import React, { useState } from 'react';
 import AlertToaster from './AlertToaster';
+import { postVolunteerData } from '../utils/serverFunctions';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const emptyFormValues = {
   first_name: '',
@@ -12,6 +13,7 @@ const emptyFormValues = {
 };
 
 export default function UserCreate() {
+  const { getAccessTokenSilently } = useAuth0();
   const [formValues, setFormValues] = useState(emptyFormValues);
   
   // Alerting
@@ -27,7 +29,7 @@ export default function UserCreate() {
     });
   };
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     let filledData = Object.keys(formValues).reduce((obj, key) => {
       // @ts-ignore for now
@@ -37,15 +39,14 @@ export default function UserCreate() {
       }
       return obj;
     }, {});
-    axios
-      .post("/api/volunteers", filledData)
-      .then((response) => {
-        setFormValues(emptyFormValues);
-        setSuccessStatus(true)
-      })
-      .catch((error) => {
-        setErrorStatus(true);
-      });
+    const authToken = await getAccessTokenSilently();
+    const res = await postVolunteerData(authToken, filledData);
+    if (res.error) {
+      setErrorStatus(true);
+    } else {
+      setFormValues(emptyFormValues);
+      setSuccessStatus(true)
+    }
   };
 
   return (

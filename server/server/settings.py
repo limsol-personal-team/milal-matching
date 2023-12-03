@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+from common.utils import get_env_var
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REACT_BUILD_DIR = os.path.join(os.path.dirname(BASE_DIR), "client", "build")
@@ -21,15 +23,23 @@ REACT_BUILD_DIR = os.path.join(os.path.dirname(BASE_DIR), "client", "build")
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "907($*h%l2en+^$l%(&u@&rd10wjquxf5*r*e$8ncy-m+b3lqb"
+SECRET_KEY = get_env_var("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = get_env_var('PROD_ENV') == 'false'
+# Need to handle static files since DEBUG false, django stops handling static files
+# for you. For now, keep always true. https://tinyurl.com/y8n63uf8
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
-
+REST_FRAMEWORK = {
+    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTTokenUserAuthentication",
+    ],
+}
 
 INSTALLED_APPS = [
     "users.apps.UsersConfig",
@@ -59,9 +69,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "server.urls"
-REST_FRAMEWORK = {
-    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",)
-}
 
 TEMPLATES = [
     {
@@ -146,8 +153,23 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(REACT_BUILD_DIR, "static")]
 
 
+# JWT
+
+AUTH0_DOMAIN = get_env_var("AUTH0_DOMAIN")
+AUTH0_AUDIENCE = get_env_var("AUTH0_AUDIENCE")
+
+SIMPLE_JWT = {
+    "ALGORITHM": "RS256",
+    "JWK_URL": f"https://{AUTH0_DOMAIN}/.well-known/jwks.json",
+    "AUDIENCE": AUTH0_AUDIENCE,
+    "ISSUER": f"https://{AUTH0_DOMAIN}/",
+    "USER_ID_CLAIM": "sub",
+    "AUTH_TOKEN_CLASSES": ("authz.tokens.Auth0Token",),
+}
+
+
 # Import env dependent settings
-if os.getenv("PROD_ENV") == "True":
+if os.getenv("PROD_ENV") == "true":
     from config.prod_settings import *
 else:
     from config.dev_settings import *

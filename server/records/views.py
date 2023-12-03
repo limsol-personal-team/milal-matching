@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from records.models import MilalMatching, VolunteerHours
@@ -10,6 +11,8 @@ class MilalMatchingViewSet(viewsets.ModelViewSet):
     """
     API endpoint for managing Milal Matching
     """
+
+    permission_classes = [IsAuthenticated]
 
     queryset = MilalMatching.objects.all().order_by("-created_at")
     serializer_class = MilalMatchingSerializer
@@ -23,6 +26,8 @@ class VolunteerHoursViewSet(viewsets.ModelViewSet):
     """
     API endpoint for managing volunteer hours
     """
+
+    permission_classes = [IsAuthenticated]
 
     queryset = VolunteerHours.objects.all().order_by("-created_at")
     serializer_class = VolunteerHoursSerializer

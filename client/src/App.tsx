@@ -1,7 +1,8 @@
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import * as React from "react";
 import { BrowserRouter } from "react-router-dom";
-import Router from "./routes";
+import Router from "./providers/routes";
+import { Auth0ProviderWithNavigate } from "./providers/auth0Provider";
 
 export default function App() {
   const googleClientId =
@@ -9,7 +10,9 @@ export default function App() {
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
       <BrowserRouter>
-        <Router />
+        <Auth0ProviderWithNavigate>
+          <Router />
+        </Auth0ProviderWithNavigate>
       </BrowserRouter>
     </GoogleOAuthProvider>
   );

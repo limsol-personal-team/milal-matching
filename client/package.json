@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://127.0.0.1:8000",
   "dependencies": {
+    "@auth0/auth0-react": "^2.2.3",
     "@emotion/styled": "latest",
     "@mui/icons-material": "latest",
     "@mui/material": "latest",
@@ -20,6 +21,7 @@
     "axios": "^1.4.0",
     "clsx": "^1.2.1",
     "jwt-decode": "^3.1.2",
+    "node-jose": "^2.2.0",
     "qrcode.react": "^3.1.0",
     "react": "latest",
     "react-data-grid": "^7.0.0-beta.26",

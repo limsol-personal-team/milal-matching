@@ -7,3 +7,6 @@ export const SERVICE_TYPES = [
   "backfill",
   "other"
 ];
+
+// Auth0 Permissions
+export const AUTH0_ADMIN_PERM = "admin";

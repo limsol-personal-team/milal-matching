@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.shortcuts import render
 from django.core.cache import cache
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets
@@ -21,6 +22,7 @@ class AuthViewSet(viewsets.ViewSet):
         methods=["get", "post"],
         url_path="sign_in_token",
         url_name="sign_in_token",
+        permission_classes=[IsAuthenticated],
     )
     def sign_in_token(self, request):
         if request.method == "GET":

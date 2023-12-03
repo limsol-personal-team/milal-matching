@@ -7,8 +7,8 @@ import { GoogleLogin } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import SigninForm from "../components/SigninForm";
-import { AUTH_REDIRECT } from "../utils/constants";
+import SigninForm from "../../components/SigninForm";
+import { AUTH_REDIRECT } from "../../utils/constants";
 
 
 const CheckInPage = () => {

@@ -3,11 +3,11 @@ import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import axios from "axios";
 import React, { useState } from "react";
 import AlertToaster from "./AlertToaster";
+import { postSignInRecord } from "../utils/serverFunctions";
 
-const CheckInPage = (props: any) => {
+const SigninForm = (props: any) => {
   const { email, name } = props.googleInfo;
   const [submissionStatus, setSubmissionStatus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,23 +20,20 @@ const CheckInPage = (props: any) => {
     background: "white",
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const data = {
       email: email,
       name: name,
     };
     setIsLoading(true);
-
-    axios
-      .post("/api/auth/sign_in_record", data)
-      .then((response) => {
-        setSubmissionStatus(true);
-        setIsLoading(true);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        setErrorStatus(true);
-      });
+    const res = await postSignInRecord(data);
+    if (res.error) {
+      setIsLoading(false);
+      setErrorStatus(true);
+    } else {
+      setSubmissionStatus(true);
+      setIsLoading(true);
+    }
   };
 
   return (
@@ -87,4 +84,4 @@ const CheckInPage = (props: any) => {
   );
 };
 
-export default CheckInPage;
+export default SigninForm;
