@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
-from common.utils import get_env_var
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REACT_BUILD_DIR = os.path.join(os.path.dirname(BASE_DIR), "client", "build")
@@ -23,7 +21,7 @@ REACT_BUILD_DIR = os.path.join(os.path.dirname(BASE_DIR), "client", "build")
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_env_var("DJANGO_SECRET_KEY")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = get_env_var('PROD_ENV') == 'false'
@@ -155,8 +153,8 @@ STATICFILES_DIRS = [os.path.join(REACT_BUILD_DIR, "static")]
 
 # JWT
 
-AUTH0_DOMAIN = get_env_var("AUTH0_DOMAIN")
-AUTH0_AUDIENCE = get_env_var("AUTH0_AUDIENCE")
+AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
+AUTH0_AUDIENCE = os.getenv("AUTH0_AUDIENCE")
 
 SIMPLE_JWT = {
     "ALGORITHM": "RS256",

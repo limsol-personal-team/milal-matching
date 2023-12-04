@@ -83,16 +83,16 @@ git push
 
 Download [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-Build the image:
+Build the image (do not set build arg when building for prod):
 
 ```
-docker build -t django_app .
+docker build -t YOUR_TAG .
 ```
 
-Run the image in a container and expose 8000:
+Run the image in a container and expose 8000 (in prod we run with env vars configured in console):
 
 ```
-docker run -p 8000:8000 --name milal-app django_app
+docker run --env-file server/.env -p 8000:8000 --name milal-app YOUR_TAG
 ```
 
 Exec into a container:
@@ -130,6 +130,21 @@ npx husky add .husky/pre-commit "npx lint-staged"
 `CD` into `client` and run `npm i` to install new devDependencies.
 
 This will run prettier before committing any changes in `client` folder.
+
+## FOR PROD:
+
+Useful AWS commands:
+```
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin YOUR_ECR_TAG/milal-app
+
+docker build -t YOUR_ECR_TAG/milal-app .
+
+docker push YOUR_ECR_TAG/milal-app:latest
+
+aws ecs update-service --cluster MilalAppCluster --service MilalAppService --force-new-deployment
+
+```
+- Update `client/.env.production` to use prod env values when running `npm run build`
 
 ## Tips
 
