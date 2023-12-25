@@ -92,7 +92,7 @@ export const getVolunteerHours = async (authToken: any, volunteerId: any) => {
 export const getEmailAccounts = async (authToken: any, queryString: any) => {
   let url = "/api/email_accounts";
   if (queryString) {
-    url += `?volunteer=${queryString}`
+    url += `?${queryString}`
   }
   const config: AxiosRequestConfig = {
     url: url,
@@ -109,6 +109,7 @@ export const patchEmailAccounts = async (authToken: any, emailId: any, data: any
   const config: AxiosRequestConfig = {
     url: `/api/email_accounts/${emailId}`,
     method: "PATCH",
+    data: data,
     headers: {
       "content-type": "application/json",
       Authorization: `Bearer ${authToken}`,
