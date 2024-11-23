@@ -5,10 +5,11 @@ import { useEffect, useState } from 'react';
 import '../static/Antdstyle.css';
 import ScrollList from './ScrollList';
 import AlertToaster from './AlertToaster';
-import { SERVICE_TYPES } from '../utils/constants';
+import { SERVICE_TYPES, UserTypes } from '../utils/constants';
 import { convertToDateTimeISO } from '../utils/dateTime';
-import { getVolunteerData, postVolunteerHoursBulkCreate } from '../utils/serverFunctions';
+import { getUserData, postVolunteerHoursBulkCreate } from '../utils/serverFunctions';
 import { useAuth0 } from '@auth0/auth0-react';
+import { ScrollListProps, SearchScrollList } from './SearchScrollList';
 
 
 interface VolunteerData {
@@ -80,7 +81,7 @@ export default function HoursCreate() {
       if (formValues[key]) {
       // @ts-ignore for now
         obj[key] = (key === "service_date") ? 
-        convertToDateTimeISO(formValues[key]) : formValues[key];
+        convertToDateTimeISO(new Date(formValues[key])) : formValues[key];
       }
       return obj;
     }, {});
@@ -98,7 +99,7 @@ export default function HoursCreate() {
   useEffect(() => {
     const fetchData = async () => {
       const token = await getAccessTokenSilently();
-      const res = await getVolunteerData(token);
+      const res = await getUserData(token, UserTypes.Volunteers);
       if (!res.error) {
         let nameList = res.data.map(({ first_name, last_name, id }: VolunteerData) => ( 
           { 
@@ -119,8 +120,8 @@ export default function HoursCreate() {
     fetchData();
   }, []);
 
-  const scrollListProps = {
-    itemList: nameList,
+  const scrollListProps: ScrollListProps = {
+    initialItemList: nameList,
     handleOptionClick: handleOptionClick,
     isMultiSelect: true
   }
@@ -131,12 +132,12 @@ export default function HoursCreate() {
         {...alertProps}
         successMessage="Hours created!"
       />
+      <SearchScrollList 
+        {...scrollListProps}
+      />
       <form onSubmit={handleSubmit}>
         <FormControl>
           <Stack spacing={2}>
-            <ScrollList 
-              {...scrollListProps}
-            />
             <TextField
               required
               select

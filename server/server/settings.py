@@ -86,10 +86,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "server.wsgi.application"
 
+# Redis cache settings
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 1
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://localhost:6379/1",  # Update with your Redis server's location
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}",  # Update with your Redis server's location
     }
 }
 
@@ -167,7 +171,7 @@ SIMPLE_JWT = {
 
 
 # Import env dependent settings
-if os.getenv("PROD_ENV") == "true":
+if os.getenv("PROD_ENV").strip().lower() == "true":
     from config.prod_settings import *
 else:
     from config.dev_settings import *

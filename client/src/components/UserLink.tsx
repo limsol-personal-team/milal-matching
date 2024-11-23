@@ -4,8 +4,10 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import ScrollList from './ScrollList';
-import { getEmailAccounts, getVolunteerData, patchEmailAccounts } from '../utils/serverFunctions';
+import { getEmailAccounts, getUserData, patchEmailAccounts } from '../utils/serverFunctions';
 import { useAuth0 } from '@auth0/auth0-react';
+import { UserTypes } from '../utils/constants';
+import { SearchScrollList } from './SearchScrollList';
 
 interface EmailAccountData {
   id: string;
@@ -28,7 +30,11 @@ interface VolunteerData {
   graduation_year: number;
 }
 
-export default function UserDetail() {
+export interface UserLinkProps {
+  userType: UserTypes
+}
+
+export default function UserLink({ userType } : UserLinkProps) {
   const { getAccessTokenSilently } = useAuth0();
   // Pull initial data into structs
   const [emailList, setEmailList] = useState<Object[]>([]);
@@ -68,7 +74,7 @@ export default function UserDetail() {
   
   const pullVolunteer = async () => {
     const authToken = await getAccessTokenSilently();
-    const res = await getVolunteerData(authToken);
+    const res = await getUserData(authToken, UserTypes.Volunteers);
     if (!res.error) {
       let nameList = res.data.map(({ first_name, last_name, id }: VolunteerData) => ( 
         { 
@@ -120,25 +126,23 @@ export default function UserDetail() {
   }, []);
 
   const scrollListNameProps = {
-    itemList: nameList,
+    initialItemList: nameList,
     handleOptionClick: handleNameOptionClick
   }
   
   const scrollListEmailProps = {
-    itemList: emailList,
+    initialItemList: emailList,
     handleOptionClick: handleEmailOptionClick
   }
 
   return (
     <>
-      <ScrollList 
+      <SearchScrollList 
         {...scrollListNameProps}
       />
-      <br></br>
-      <ScrollList 
+      <SearchScrollList 
         {...scrollListEmailProps}
       />
-      <br></br>
       <Button 
         type="submit" 
         variant="contained"

@@ -14,6 +14,9 @@ import UserPage from "../pages/UserPage";
 import HoursPage from "../pages/HoursPage";
 import { Auth0Guard } from "../components/Auth0Guard";
 import UnauthorizedPage from "../pages/UnauthorizedPage";
+import MilalFriendPage from "../pages/MilalFriendPage";
+import DeveloperPage from "../pages/DeveloperPage";
+import ContactPage from "../pages/ContactPage";
 
 // ----------------------------------------------------------------------
 
@@ -36,9 +39,13 @@ export default function Router() {
       children: [
         { element: <Navigate to="/ops/home" />, index: true },
         { path: "/ops/home", element: <HomePage /> },
-        { path: "/ops/users", element: <UserPage /> },
+        { path: "/ops/volunteers", element: <UserPage /> },
+        { path: "/ops/milal-friends", element: <MilalFriendPage /> },
+        { path: "/ops/matching", element: <MatchingPage /> },
         { path: "/ops/volunteer-hours", element: <HoursPage /> },
         { path: "/ops/checkin-qr", element: <CheckInQRPage /> },
+        { path: "/ops/developer", element: <DeveloperPage /> },
+        { path: "/ops/contact", element: <ContactPage /> }
       ],
     },
     {

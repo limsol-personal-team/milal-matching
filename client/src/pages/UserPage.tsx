@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import UserDetail from '../components/UserDetail';
 import UserCreate from '../components/UserCreate';
 import UserLink from '../components/UserLink';
+import { UserTypes } from '../utils/constants';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -57,13 +58,13 @@ export default function UserPage() {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <UserCreate />
+        <UserCreate userType={UserTypes.Volunteers}/>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <UserDetail />
+        <UserDetail userType={UserTypes.Volunteers}/>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <UserLink />
+        <UserLink userType={UserTypes.Volunteers}/>
       </CustomTabPanel>
     </Box>
   );

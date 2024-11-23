@@ -3,38 +3,19 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import { v4 as uuid } from 'uuid';
-import { getVolunteerData, getVolunteerHours } from '../utils/serverFunctions';
+import { getUserData, getVolunteerHours } from '../utils/serverFunctions';
 
 import '../static/Antdstyle.css';
-import ScrollList from './ScrollList';
 import { useAuth0 } from '@auth0/auth0-react';
+import { UserTypes } from '../utils/constants';
+import { ScrollListProps, SearchScrollList } from './SearchScrollList';
+import { VolunteerData, VolunteerHoursData } from '../types/modelSchema';
 
-
-interface VolunteerData {
-  id: string;
-  created_at: string;
-  last_updated: string;
-  description: string;
-  dob: string;
-  first_name: string;
-  last_name: string;
-  active: boolean;
-  graduation_year: number;
+export interface UserDetailProps {
+  userType: UserTypes
 }
 
-interface VolunteerHoursData {
-  id: string;
-  created_at: string;
-  last_updated: string;
-  service_type: string;
-  service_date: string;
-  hours: number;
-  description: string;
-  volunteer: string;
-  email: string;
-}
-
-export default function UserDetail() {
+export default function UserDetail( { userType } : UserDetailProps) {
   const { getAccessTokenSilently } = useAuth0();
   // Pull initial data into structs
   const [nameList, setNameList] = useState<Object[]>([]);
@@ -49,16 +30,20 @@ export default function UserDetail() {
   const handleOptionClick = async (idList) => {
     setUserId(idList[0]);
     setUserData(usersDataMap[idList[0]]);
-    const authToken = await getAccessTokenSilently();
-    const res = await getVolunteerHours(authToken, idList[0]);
-    if (!res.error) {
-      setUserVolunteerHours(res.data);
+
+    // For volunteer page, fetch hours
+    if (userType === UserTypes.Volunteers) {
+      const authToken = await getAccessTokenSilently();
+      const res = await getVolunteerHours(authToken, idList[0]);
+      if (!res.error) {
+        setUserVolunteerHours(res.data);
+      }
     }
   }
   
   const pullVolunteer = async () => {
     const authToken = await getAccessTokenSilently();
-    const res = await getVolunteerData(authToken);
+    const res = await getUserData(authToken, userType);
     if (!res.error) {
       let nameList = res.data.map(({ first_name, last_name, id }: VolunteerData) => ( 
         { 
@@ -81,11 +66,10 @@ export default function UserDetail() {
     pullVolunteer()
   }, []);
 
-  const scrollListProps = {
-    itemList: nameList,
+  const scrollListProps: ScrollListProps = {
+    initialItemList: nameList,
     handleOptionClick: handleOptionClick
   }
-
 
   const renderRow = (props: ListChildComponentProps) => {
     const {data, index, style} = props; // style is implictily passed by react-window. prevents jittering
@@ -108,9 +92,20 @@ export default function UserDetail() {
     );
   }
 
+  // TODO fix typing
+  const renderField = (key: string, data: any) => {
+    const keyToCheck: keyof VolunteerData = "recommended_match";
+    if (key === keyToCheck) {
+      return data.map(
+        (item : any) => `${item.name} (${item.count})`).join(", ")
+    } else {
+      return data.toString()
+    }
+  }
+
   return (
     <>
-      <ScrollList 
+      <SearchScrollList 
         {...scrollListProps}
       />
       <br></br>
@@ -120,7 +115,7 @@ export default function UserDetail() {
       <div>
         { userData && Object.keys(userData).map((key) => (
           // @ts-ignore for now
-          <p key={uuid()}>{key}: {userData[key] && userData[key].toString()}</p> // Convert to string for bools
+          <p key={uuid()}>{key}: {userData[key] && renderField(key, userData[key])}</p> // Convert to string for bools
         ))}
       </div>
       { userVolunteerHours.length !== 0 &&

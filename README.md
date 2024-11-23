@@ -15,6 +15,16 @@ cd client
 npm install
 ```
 
+In `/src folder`, create `.env.development.local` file to load env variables during local development (via `npm start`):
+
+```
+REACT_APP_AUTH0_DOMAIN={AUTH0_DOMAIN}
+REACT_APP_AUTH0_CLIENT_ID={AUTH0_CLIENT_ID}
+REACT_APP_AUTH0_AUDIENCE=https://milal-app.com
+REACT_APP_AUTH0_CALLBACK_URL=http://localhost:3000/ops
+REACT_APP_SERVER_URL=http://localhost:3000
+```
+
 Run the app in the development mode and
 open http://localhost:3000 to view it in the browser:
 
@@ -38,6 +48,33 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+Create `.env` file with following values (use `PROD_ENV=false` for local development):
+
+```
+# Django Server Config
+# This file is only useful for local server. 
+# We set these env vars in ECS via Task Definitions for Prod.
+## PROD_ENV - lower case, CAREFUL TURNING IT ON. For interacting with Prod DB.
+
+# LOCAL DEV VARS
+PROD_ENV=true
+DJANGO_SECRET_KEY=!a+63==5*eszs5(0-c=8(4!tp9q)ps5d%p_qx1)mez46!nx%m0$i
+PORT=8000
+DEBUG_ENABLE=false
+
+# PROD VARS
+## DB Creds
+DB_NAME={DB_CONFIG}
+DB_USER={DB_CONFIG}
+DB_PASSWORD={DB_CONFIG}
+DB_ENDPOINT={DB_CONFIG}
+DB_PORT={DB_CONFIG}
+
+## Auth0 Config
+AUTH0_DOMAIN={AUTH0_CONFIG}
+AUTH0_AUDIENCE={AUTH0_CONFIG}
+```
+
 Run migrations + server and open http://localhost:8000/ to view DRF Browsable API in browser:
 
 ```bash
@@ -55,6 +92,12 @@ To see current state of migrations, run:
 
 ```bash
 python manage.py showmigrations
+```
+
+Start up Redis cache by installing and running server:
+```bash
+brew install redis
+redis-server
 ```
 
 ## GIT Tips
@@ -81,6 +124,8 @@ git push
 
 ## Docker
 
+You can also use Docker to develop locally.
+
 Download [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
 Build the image (do not set build arg when building for prod):
@@ -89,7 +134,7 @@ Build the image (do not set build arg when building for prod):
 docker build -t YOUR_TAG .
 ```
 
-Run the image in a container and expose 8000 (in prod we run with env vars configured in console):
+Run the image in a container and expose 8000 (in prod we run with env vars configured in console). Make sure to check `PROD_ENV` value:
 
 ```
 docker run --env-file server/.env -p 8000:8000 --name milal-app YOUR_TAG
@@ -144,8 +189,21 @@ docker push YOUR_ECR_TAG/milal-app:latest
 aws ecs update-service --cluster MilalAppCluster --service MilalAppService --force-new-deployment
 
 ```
-- Update `client/.env.production` to use prod env values when running `npm run build`
+
+Client Environment Vars:
+- Create `client/.env.production` to use prod env values when running `npm run build`. See Client section above for variables to set.
+
+Server Environment Vars:
+- Update environment vars in task definitions in ECS
+
 
 ## Tips
 
 - For managing Node versions, use [nvm](https://github.com/nvm-sh/nvm). For managing python versions, use [pyenv](https://github.com/pyenv/pyenv)
+  - `nvm install 19.6.0`
+  - `pyenv install 3.10.4`
+  - `pyenv local 3.10.4` 
+- pip installation errors on MacOS:
+  - `Error: pg_config executable not found.`
+    - Install postgresql on your device via `brew install postgresql`
+

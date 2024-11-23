@@ -12,7 +12,7 @@
 
 # user config
 /.vscode
-/.python-version
+**/.python-version
 /.husky
 **/credentials.json
 commands.md

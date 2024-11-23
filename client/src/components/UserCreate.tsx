@@ -1,18 +1,22 @@
 import { Button, FormControl, Stack, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import AlertToaster from './AlertToaster';
-import { postVolunteerData } from '../utils/serverFunctions';
+import { postUserData } from '../utils/serverFunctions';
 import { useAuth0 } from '@auth0/auth0-react';
+import { MilalFriendFormSchema, UserFormSchema, UserTypes } from '../utils/constants';
 
-const emptyFormValues = {
-  first_name: '',
-  last_name: '',
-  description: '',
-  dob: '',
-  graduation_year: '',
-};
+export interface UserCreateProps {
+  userType: UserTypes
+}
 
-export default function UserCreate() {
+export default function UserCreate({ userType } : UserCreateProps) {
+
+  const schema = userType === UserTypes.Volunteers ? UserFormSchema : MilalFriendFormSchema;
+  const emptyFormValues = schema.reduce((obj, field) => {
+    obj[field.key] = "";
+    return obj;
+  }, {} as Record<string, string>);
+
   const { getAccessTokenSilently } = useAuth0();
   const [formValues, setFormValues] = useState(emptyFormValues);
   
@@ -40,7 +44,7 @@ export default function UserCreate() {
       return obj;
     }, {});
     const authToken = await getAccessTokenSilently();
-    const res = await postVolunteerData(authToken, filledData);
+    const res = await postUserData(authToken, filledData, userType);
     if (res.error) {
       setErrorStatus(true);
     } else {
@@ -58,43 +62,19 @@ export default function UserCreate() {
       <form onSubmit={handleSubmit}>
         <FormControl>
           <Stack spacing={2}>
-            <TextField 
-              required
-              name="first_name" 
-              label="First Name" 
-              type="text" 
-              value={formValues.first_name} 
-              onChange={handleInputChange} 
+          {schema.map(({ key, isRequired, props }) => (
+            <TextField
+              key={key}
+              required={isRequired}
+              name={props.name}
+              label={props.label}
+              type={props.type}
+              value={formValues[props.name]}
+              onChange={handleInputChange}
+              // Add any special props conditionally if needed
+              InputLabelProps={props.type === "date" ? { shrink: true } : undefined}
             />
-            <TextField 
-              required
-              name="last_name" 
-              label="Last Name" 
-              type="text" 
-              value={formValues.last_name} 
-              onChange={handleInputChange} 
-            />
-            <TextField 
-              name="description" 
-              label="Description" 
-              type="text" 
-              value={formValues.description} onChange={handleInputChange} 
-            />
-            <TextField 
-              InputLabelProps={{ shrink: true }} 
-              name="dob" 
-              label="Date of Birth" 
-              type="date" 
-              value={formValues.dob} 
-              onChange={handleInputChange} 
-            />
-            <TextField 
-              name="graduation_year" 
-              label="Graduation Year" 
-              type="number" 
-              value={formValues.graduation_year} 
-              onChange={handleInputChange} 
-            />
+          ))}
           </Stack>
         </FormControl>
         <br></br>

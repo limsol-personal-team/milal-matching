@@ -29,6 +29,10 @@ class MilalFriendViewSet(viewsets.ModelViewSet):
 
     queryset = MilalFriend.objects.all().order_by("first_name")
     serializer_class = MilalFriendSerializer
+    filterset_fields = {
+        "first_name": ["icontains"],
+        "last_name": ["icontains"],
+    }
 
 
 class EmailAccountViewSet(viewsets.ModelViewSet):

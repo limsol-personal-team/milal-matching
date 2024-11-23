@@ -3,6 +3,8 @@ import HomeIcon from "@mui/icons-material/Home";
 import PeopleIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
+import JoinInnerIcon from '@mui/icons-material/JoinInner';
+import DeveloperBoardIcon from '@mui/icons-material/DeveloperBoard';
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Drawer, { DrawerProps } from "@mui/material/Drawer";
@@ -19,9 +21,19 @@ const categories = [
     id: "Pages",
     children: [
       {
-        id: "Users",
-        slug: "users",
+        id: "Volunteers",
+        slug: "volunteers",
         icon: <PeopleIcon />,
+      },
+      {
+        id: "Milal Friends",
+        slug: "milal-friends",
+        icon: <PeopleIcon />,
+      },
+      {
+        id: "Matching",
+        slug: "matching",
+        icon: <JoinInnerIcon />,
       },
       {
         id: "Hours",
@@ -32,6 +44,11 @@ const categories = [
         id: "Check-In QR",
         slug: "checkin-qr",
         icon: <AssignmentIcon />,
+      },
+      {
+        id: "Developer",
+        slug: "developer",
+        icon: <DeveloperBoardIcon />,
       },
     ],
   },
