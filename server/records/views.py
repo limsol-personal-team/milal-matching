@@ -84,12 +84,14 @@ class MilalMatchingViewSet(viewsets.ModelViewSet):
         milal_friend = serializer.validated_data.get('milal_friend')
         volunteer = serializer.validated_data.get('volunteer')
         local_date = timezone.localtime(timezone.now()).date()
-        MilalMatching.objects.filter(
-            match_date=local_date, milal_friend=milal_friend, volunteer=volunteer).delete()
 
-        # If self-match (aka no volunteer), delete self match record
-        MilalMatching.objects.filter(
-            match_date=local_date, milal_friend=milal_friend, volunteer=None).delete()
+        filter_dict = { "match_date": local_date }
+        if milal_friend:
+            filter_dict["milal_friend"] = milal_friend
+        if volunteer:
+            filter_dict["volunteer"] = volunteer
+
+        MilalMatching.objects.filter(**filter_dict).delete()
 
         # Customize response if needed
         return Response(status=status.HTTP_200_OK)

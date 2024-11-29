@@ -88,19 +88,44 @@ export default function UserDetail() {
     }
   }
 
-  const submitMatchData = async (noVolunteer? : boolean, unmatch? : boolean) => {
+  const submitMatchData = async (noVolunteer? : boolean) => {
     // MilalFriend must be selected minimally
     if (!friendId) {
       setErrorStatus(true);
       return;
     }
+    // For self-match, match with none/null
     let reqBody = {
       "volunteer": noVolunteer ? null: userId,
       "milal_friend": friendId
     };
     const authToken = await getAccessTokenSilently();
-    const res = unmatch ? await postUnmatchData(authToken, reqBody) : 
-      await postMatchData(authToken, reqBody);
+    const res = await postMatchData(authToken, reqBody);
+    if (res.error) {
+      setErrorStatus(true);
+      return;
+    } else {
+      // Update data by re-fetching all data
+      pullUserData(UserTypes.Volunteers);
+      pullMatchData(userId, UserTypes.Volunteers);
+      pullUserData(UserTypes.MilalFriends);
+      pullMatchData(friendId, UserTypes.MilalFriends);
+      setSuccessStatus(true);
+    }
+  }
+
+  const submitUnmatchData = async () => {
+    // MilalFriend must be selected minimally
+    if (!friendId) {
+      setErrorStatus(true);
+      return;
+    }
+    // For unmatch, clear milal-friend of all matches
+    let reqBody = {
+      "milal_friend": friendId
+    };
+    const authToken = await getAccessTokenSilently();
+    const res = await postUnmatchData(authToken, reqBody);
     if (res.error) {
       setErrorStatus(true);
       return;
@@ -121,9 +146,9 @@ export default function UserDetail() {
   const handleMatchSubmit = async () => {
     submitMatchData();
   }
-  
+
   const handleUnmatchSubmit = async () => {
-    submitMatchData(false, true);
+    submitUnmatchData();
   }
 
   // @ts-ignore for now
