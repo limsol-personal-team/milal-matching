@@ -31,4 +31,4 @@ CMD python manage.py migrate && \
     redis-server --daemonize yes && \ 
     celery -A server worker --loglevel=INFO --detach && \
     celery -A server beat --loglevel=info --detach && \
-    python manage.py runserver 0.0.0.0:8000
+    gunicorn
