@@ -1,5 +1,6 @@
 from datetime import timedelta
 from utils.decorators import cache_serializer_field
+from collections import Counter
 from users.models import Volunteer, MilalFriend, EmailAccount
 from records.models import MilalMatching
 from rest_framework import serializers
@@ -26,21 +27,28 @@ class VolunteerSerializer(serializers.ModelSerializer):
 
     @cache_serializer_field()
     def get_recommended_match(seof, obj):
-        filter_date = timezone.now() - timedelta(days=60)
+        filter_date = timezone.now() - timedelta(days=180)
+
         # Filter data for the last two months and group by 'friend'
         query = (
             MilalMatching.objects.filter(match_date__gte=filter_date, volunteer=obj)
             .values('milal_friend', 'milal_friend__first_name', 'milal_friend__last_name')
-            .annotate(count=Count('milal_friend'))
-            .order_by('-count')
         )
+        counter = Counter((item['milal_friend'], item['milal_friend__first_name'], 
+                           item['milal_friend__last_name']) for item in query)
+        
+        # Convert the Counter back into a list of objects with counts
+        results = list(counter.items())
+
+        # Self match will have null volunteer field
         formatted_result = [
             {
-                "name": f"{item['milal_friend__first_name']} {item['milal_friend__last_name']}",
-                "count": item["count"]
+                "name": f"{key[1]} {key[2]}" if key[0] else "Self", 
+                "count": count
             }
-            for item in query
+            for key, count in results
         ]
+
         return formatted_result
 
 
@@ -61,20 +69,27 @@ class MilalFriendSerializer(serializers.ModelSerializer):
     @cache_serializer_field()
     def get_recommended_match(seof, obj):
         filter_date = timezone.now() - timedelta(days=60)
+
         # Filter data for the last two months and group by 'friend'
         query = (
             MilalMatching.objects.filter(match_date__gte=filter_date, milal_friend=obj)
             .values('volunteer', 'volunteer__first_name', 'volunteer__last_name')
-            .annotate(count=Count('volunteer'))
-            .order_by('-count')
         )
+        counter = Counter((item['volunteer'], item['volunteer__first_name'], 
+                           item['volunteer__last_name']) for item in query)
+        
+        # Convert the Counter back into a list of objects with counts
+        results = list(counter.items())
+
+        # Self match will have null volunteer field
         formatted_result = [
             {
-                "name": f"{item['volunteer__first_name']} {item['volunteer__last_name']}",
-                "count": item["count"]
+                "name": f"{key[1]} {key[2]}" if key[0] else "Self", 
+                "count": count
             }
-            for item in query
+            for key, count in results
         ]
+
         return formatted_result
 
     class Meta:

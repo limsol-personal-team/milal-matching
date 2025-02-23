@@ -1,4 +1,6 @@
+from httplib2 import Response
 from rest_framework import viewsets
+from rest_framework.throttling import AnonRateThrottle
 from authz.permissions import HasAdminPermission
 from users.serializers import EmailAccountSerializer
 from users.models import Volunteer, MilalFriend, EmailAccount
@@ -49,3 +51,12 @@ class EmailAccountViewSet(viewsets.ModelViewSet):
         "email": ["exact"],
         "display_name": ["icontains"],
     }
+
+
+# from rest_framework.views import APIView
+
+# class SimpleThrottledView(APIView):
+#     throttle_classes = [AnonRateThrottle]
+
+#     def get(self, request):
+#         return Response({'message': 'Request is throttled if you exceed the limit'})

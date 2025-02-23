@@ -8,8 +8,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status, viewsets
+from rest_framework.views import APIView
 
 import uuid
+from utils.throttling import NoThrottle
 from utils.decorators import SERIALIZER_CACHE_KEY
 from utils.gsheets import SATURDAY_CHECKIN_SPREADSHEET_ID, get_gsheets_service
 
@@ -127,3 +129,11 @@ class CacheViewSet(viewsets.ViewSet):
         
         except Exception as e:
             return Response({"detail": f"Error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class PingView(APIView):
+
+    # Do not throttle on ping requests
+    throttle_classes = [NoThrottle] 
+    def get(self, request):
+        # Simple health check response
+        return Response({"status": "ok"}, status=status.HTTP_200_OK)

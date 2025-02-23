@@ -23,6 +23,5 @@ router.register(r"cache", auth_views.CacheViewSet, basename="cache")
 urlpatterns = [
     path("api/", include(router.urls)),
     path("admin/", admin.site.urls),
-    # Serve react build static files. Kinda hacky.
-    re_path(r"^(?:.*)/?$", TemplateView.as_view(template_name="index.html")),
+    path('ping', auth_views.PingView.as_view(), name='ping'),
 ]

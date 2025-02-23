@@ -1,11 +1,11 @@
-# Setup and build react client
+# # Setup and build react client
 
-FROM node:20-alpine as client
+# FROM node:20-alpine as client
 
-WORKDIR /client
-COPY client .
-RUN npm ci
-RUN npm run build
+# WORKDIR /client
+# COPY client .
+# RUN npm ci
+# RUN npm run build
 
 # Build new image
 
@@ -22,7 +22,7 @@ RUN apt install -y python3-dev libpq-dev gcc
 # Setup and start django server. Expose 8000
 
 WORKDIR /app/server
-COPY --from=client /client/build /app/client/build
+# COPY --from=client /client/build /app/client/build
 COPY server /app/server
 
 EXPOSE 8000

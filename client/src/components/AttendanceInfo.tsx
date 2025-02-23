@@ -3,16 +3,17 @@ import React, { useState } from 'react';
 import AlertToaster from './AlertToaster';
 import { postUserData } from '../utils/serverFunctions';
 import { useAuth0 } from '@auth0/auth0-react';
-import { MilalFriendFormSchema, UserFormSchema } from '../utils/formSchemas';
+import { AttendanceFormSchema } from '../utils/formSchemas';
 import { UserTypes } from '../utils/constants';
 
-export interface UserCreateProps {
+export interface AttendanceInfoProps {
   userType: UserTypes
 }
 
-export default function UserCreate({ userType } : UserCreateProps) {
 
-  const schema = userType === UserTypes.Volunteers ? UserFormSchema : MilalFriendFormSchema;
+export default function AttendanceInfo({ userType } : AttendanceInfoProps) {
+
+  const schema = AttendanceFormSchema;
   const emptyFormValues = schema.reduce((obj, field) => {
     obj[field.key] = "";
     return obj;

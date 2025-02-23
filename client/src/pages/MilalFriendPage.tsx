@@ -53,6 +53,7 @@ export default function MilalFriendPage() {
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Create" {...a11yProps(0)} />
           <Tab label="Detail" {...a11yProps(1)} />
+          {/* <Tab label="Attendance" {...a11yProps(2)} /> */}
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -61,6 +62,9 @@ export default function MilalFriendPage() {
       <CustomTabPanel value={value} index={1}>
         <UserDetail userType={UserTypes.MilalFriends}/>
       </CustomTabPanel>
+      {/* <CustomTabPanel value={value} index={2}>
+        <UserDetail userType={UserTypes.MilalFriends}/>
+      </CustomTabPanel> */}
     </Box>
   );
 }
