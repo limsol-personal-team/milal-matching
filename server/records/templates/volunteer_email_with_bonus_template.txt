@@ -1,0 +1,17 @@
+Dear {volunteer_name},
+
+Please find attached your total volunteer hours report for Milal Saturday Agape.
+
+Details:
+- Report Date: {report_date}
+- Name: {volunteer_name}
+- Volunteering Period: {volunteer_period}
+
+**Your hours have been adjusted accordingly for additionally serving as a leader/team member.
+
+This report certifies your volunteer hours recorded in our system. If you have any questions about the report or notice any discrepancies, please contact us.
+
+Thank you for all that you do for the Milal community!
+
+Best regards,
+Milal Staff 

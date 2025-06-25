@@ -154,7 +154,7 @@ class Command(BaseCommand):
             if generate_docx or generate_pdf:
                 # Use template path from management/commands directory
                 current_dir = Path(__file__).parent
-                template_path = current_dir / 'Hours_Report_Template.docx'
+                template_path = current_dir / 'volunteer_report_template.docx'
                 
                 generate_docx_report(
                     volunteer=volunteer,

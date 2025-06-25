@@ -284,9 +284,9 @@ class VolunteerHoursViewSet(viewsets.ModelViewSet):
         
         # Choose template based on whether volunteer has bonus percentage
         if volunteer.bonus_percentage and volunteer.bonus_percentage > 0:
-            template_filename = 'volunteer_report_email_with_bonus.txt'
+            template_filename = 'volunteer_email_with_bonus_template.txt'
         else:
-            template_filename = 'volunteer_report_email.txt'
+            template_filename = 'volunteer_email_template.txt'
         
         # Read email template from text file
         template_path = Path(__file__).parent / 'templates' / template_filename

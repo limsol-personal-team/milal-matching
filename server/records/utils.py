@@ -49,7 +49,7 @@ def generate_docx_report(volunteer, start_date, end_date, total_hours, output_fi
     if template_path is None:
         # Look in the management/commands directory
         current_dir = Path(__file__).parent
-        template_path = current_dir / 'management' / 'commands' / 'Hours_Report_Template.docx'
+        template_path = current_dir / 'templates' / 'volunteer_report_template.docx'
     
     if not template_path.exists():
         raise Exception(f'Word template not found at {template_path}')
