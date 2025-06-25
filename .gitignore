@@ -3,6 +3,8 @@
 /node_modules
 .env*
 *.log*
+.DS_Store
+
 # python cache
 **/__pycache__
 **/*.pyc
@@ -17,3 +19,9 @@
 /.husky
 **/credentials.json
 commands.md
+
+# output file
+*.docx
+*.pdf
+*volunteer_hours*.txt
+**volunteer_report*.txt

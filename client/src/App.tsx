@@ -3,6 +3,7 @@ import * as React from "react";
 import { BrowserRouter } from "react-router-dom";
 import Router from "./providers/routes";
 import { Auth0ProviderWithNavigate } from "./providers/auth0Provider";
+import { ActiveFilterProvider } from "./providers/activeFilterProvider";
 
 export default function App() {
   const googleClientId =
@@ -11,7 +12,9 @@ export default function App() {
     <GoogleOAuthProvider clientId={googleClientId}>
       <BrowserRouter>
         <Auth0ProviderWithNavigate>
-          <Router />
+          <ActiveFilterProvider>
+            <Router />
+          </ActiveFilterProvider>
         </Auth0ProviderWithNavigate>
       </BrowserRouter>
     </GoogleOAuthProvider>

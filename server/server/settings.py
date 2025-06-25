@@ -23,10 +23,9 @@ BASE_DIR = os.path.dirname((os.path.abspath(__file__)))
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = get_env_var('PROD_ENV') == 'false'
 # Need to handle static files since DEBUG false, django stops handling static files
 # for you. For now, keep always true. https://tinyurl.com/y8n63uf8
-DEBUG = os.getenv("PROD_ENV").strip().lower() != "true"
+DEBUG = os.getenv("DEBUG_ENABLE").strip().lower() == "true"
 ALLOWED_HOSTS = ["*"]
 
 
@@ -43,6 +42,10 @@ REST_FRAMEWORK = {
         'anon': '10/minute',  # Limit non-authenticated users to 10 requests per minute
     }
 }
+
+# Disable DRF Browsable API in production
+if not DEBUG:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = ('rest_framework.renderers.JSONRenderer',)
 
 INSTALLED_APPS = [
     "users.apps.UsersConfig",

@@ -43,6 +43,24 @@ export const UserFormSchema = [
       label: "Graduation Year", 
       type: "number" 
     }
+  },
+  {
+    key: "bonus_percentage",
+    isRequired: false,
+    props: {
+      name: "bonus_percentage",
+      label: "Bonus Percentage", 
+      type: "number" 
+    }
+  },
+  {
+    key: "active",
+    isRequired: false,
+    props: {
+      name: "active",
+      label: "active", 
+      type: "boolean" 
+    }
   }
 ]
 
@@ -82,6 +100,15 @@ export const MilalFriendFormSchema = [
       label: "Date of Birth",
       type: "date" 
     }
+  },
+  {
+    key: "active",
+    isRequired: false,
+    props: {
+      name: "active",
+      label: "active", 
+      type: "boolean" 
+    }
   }
 ]
 
@@ -93,6 +120,51 @@ export const AttendanceFormSchema = [
       name: "date",
       label: "Date",
       type: "date" 
+    }
+  }
+]
+
+export const VolunteerHoursFormSchema = [
+  {
+    key: "service_type",
+    isRequired: true,
+    props: {
+      name: "service_type",
+      label: "Service Type",
+      type: "select",
+      options: [
+        { value: "saturday_agape", label: "Saturday Agape" },
+        { value: "orientation", label: "Orientation" },
+        { value: "backfill", label: "Backfill" },
+        { value: "other", label: "Other" }
+      ]
+    }
+  },
+  {
+    key: "service_date",
+    isRequired: true,
+    props: {
+      name: "service_date",
+      label: "Service Date",
+      type: "datetime-local"
+    }
+  },
+  {
+    key: "hours",
+    isRequired: true,
+    props: {
+      name: "hours",
+      label: "Hours",
+      type: "number"
+    }
+  },
+  {
+    key: "description",
+    isRequired: false,
+    props: {
+      name: "description",
+      label: "Description",
+      type: "text"
     }
   }
 ]

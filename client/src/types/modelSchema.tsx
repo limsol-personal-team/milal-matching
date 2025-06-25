@@ -23,6 +23,8 @@ export interface VolunteerData {
   graduation_year: number;
   is_day_matched: boolean;
   recommended_match: Record<string, string | number>[];
+  hours: number;
+  bonus_hours: number;
 }
 
 export interface MatchData {

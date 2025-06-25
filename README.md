@@ -57,8 +57,8 @@ Create `.env` file with following values (use `PROD_ENV=false` for local develop
 ## PROD_ENV - lower case, CAREFUL TURNING IT ON. For interacting with Prod DB.
 
 # LOCAL DEV VARS
-PROD_ENV=true
-DJANGO_SECRET_KEY=!a+63==5*eszs5(0-c=8(4!tp9q)ps5d%p_qx1)mez46!nx%m0$i
+PROD_ENV=false
+DJANGO_SECRET_KEY={DJ_SECRET_KEY}
 PORT=8000
 DEBUG_ENABLE=false
 
@@ -73,7 +73,15 @@ DB_PORT={DB_CONFIG}
 ## Auth0 Config
 AUTH0_DOMAIN={AUTH0_CONFIG}
 AUTH0_AUDIENCE={AUTH0_CONFIG}
+
+## Email Config
+EMAIL_HOST_USER={EMAIL_HOST_USER}
+EMAIL_HOST_PASSWORD={EMAIL_HOST_PASSWORD}
+DEFAULT_FROM_EMAIL={DEFAULT_FROM_EMAIL}
+
 ```
+
+- The `.env` file is used to run docker containers with specified config context. Create a separate shell file (i.e. `.envShell`) that exports all configs into the current shell for local testing via `python manage.py runserver`
 
 Run migrations + server and open http://localhost:8000/ to view DRF Browsable API in browser:
 

@@ -24,3 +24,17 @@ export const getCurrentDateTimeISO = (dateOnly? : boolean) => {
     return convertToDateTimeISO(date);
   }
 }
+
+// Convert UTC datetime to local timezone for datetime-local input
+export const convertToLocalDateTime = (utcDateTime: string): string => {
+  const date = new Date(utcDateTime);
+  const localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+  return localDate.toISOString().slice(0, 16);
+}
+
+// Convert local datetime from datetime-local input to UTC for backend
+export const convertToUTCDateTime = (localDateTime: string): string => {
+  const localDate = new Date(localDateTime);
+  const utcDate = new Date(localDate.getTime() + (localDate.getTimezoneOffset() * 60000));
+  return utcDate.toISOString();
+}

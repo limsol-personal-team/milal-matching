@@ -23,7 +23,7 @@ RUN apt install -y python3-dev libpq-dev gcc
 
 WORKDIR /app/server
 # COPY --from=client /client/build /app/client/build
-COPY server /app/server
+COPY . /app/server
 
 EXPOSE 8000
 RUN pip install -r requirements.txt

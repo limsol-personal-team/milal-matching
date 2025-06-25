@@ -6,17 +6,35 @@ from records.models import MilalMatching
 from rest_framework import serializers
 from django.db.models import Sum, Count
 from django.utils import timezone
+from users.utils import calculate_volunteer_hours_with_bonus
+
+class VolunteerListSerializer(serializers.ModelSerializer):
+    """Lightweight serializer for volunteer list - only returns ID and name"""
+    
+    class Meta:
+        model = Volunteer
+        fields = ['id', 'first_name', 'last_name']
+
+class MilalFriendListSerializer(serializers.ModelSerializer):
+    """Lightweight serializer for Milal friend list - only returns ID and name"""
+    
+    class Meta:
+        model = MilalFriend
+        fields = ['id', 'first_name', 'last_name']
 
 class VolunteerSerializer(serializers.ModelSerializer):
     hours = serializers.SerializerMethodField()
+    bonus_hours = serializers.SerializerMethodField()
     linked_emails = serializers.SerializerMethodField()
     is_day_matched = serializers.SerializerMethodField()
     recommended_match = serializers.SerializerMethodField()
 
     def get_hours(self, obj):
-        return obj.volunteerhours_set.aggregate(total=Sum("hours"))["total"]
+        return calculate_volunteer_hours_with_bonus(obj)[0]
+
+    def get_bonus_hours(self, obj):
+        return calculate_volunteer_hours_with_bonus(obj)[1]
     
-    @cache_serializer_field()
     def get_linked_emails(self, obj):
         return obj.emailaccount_set.values_list("email", flat=True)
 

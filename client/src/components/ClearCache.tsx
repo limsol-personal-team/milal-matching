@@ -1,6 +1,4 @@
-import { Typography } from "@mui/material";
-import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
+import { Typography, Box, Button, CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import AlertToaster from "./AlertToaster";
 import { postClearSerializerCache } from "../utils/serverFunctions";
@@ -32,32 +30,34 @@ const ClearCache = () => {
   return (
     <>
       <AlertToaster {...alertProps}/>
-      Serializer fields are cached to improve load times of user data. Clear to update.
-      <br></br>
-      <br></br>
-      <Button
+      <Box sx={{ mb: 2, p: 2, border: '1px solid #e0e0e0', borderRadius: 1, backgroundColor: '#fafafa' }}>
+        <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>
+          Cache Management
+        </Typography>
+        <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
+          Serializer fields are cached to improve load times of user data. Clear to update.
+        </Typography>
+        <Button
           variant="contained"
           size="medium"
-          onClick={() => {
-            handleSubmit();
-          }}
+          onClick={handleSubmit}
+          disabled={isLoading}
+          sx={{ mb: 2 }}
         >
           {isLoading ? (
-            <CircularProgress size={24} color="inherit" />
+            <CircularProgress size={20} color="inherit" />
           ) : (
             "Clear Serializer Cache"
           )}
-      </Button>
-      <br></br>
-      <br></br>
-      <Typography>
-        {
-          detailData && <>Response Detail: {detailData}</>
-        }
-      </Typography>
+        </Button>
+        {detailData && (
+          <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic', color: 'text.secondary' }}>
+            Response: {detailData}
+          </Typography>
+        )}
+      </Box>
     </>
   );
-
 }
 
 export default ClearCache;

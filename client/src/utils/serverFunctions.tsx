@@ -44,9 +44,30 @@ export const postUserData = async (authToken: any, data: any, userType: UserType
   return callExternalApi(config, authToken);
 }
 
-export const getUserData = async (authToken: any, userType: UserTypes) => {
+export const putUserData = async (authToken: any, userId: string, data: any, userType: UserTypes) => {
   const config: AxiosRequestConfig = {
-    url: `/api/${userType}`,
+    url: `/api/${userType}/${userId}`,
+    method: "PUT",
+    data: data
+  }
+  return callExternalApi(config, authToken);
+}
+
+export const deleteUserData = async (authToken: any, userId: string, userType: UserTypes) => {
+  const config: AxiosRequestConfig = {
+    url: `/api/${userType}/${userId}`,
+    method: "DELETE"
+  }
+  return callExternalApi(config, authToken);
+}
+
+export const getUserData = async (authToken: any, userType: UserTypes, queryString?: string) => {
+  let url = `/api/${userType}`;
+  if (queryString) {
+    url += `?${queryString}`;
+  }
+  const config: AxiosRequestConfig = {
+    url: url,
     method: "GET"
   }
   return callExternalApi(config, authToken);
@@ -94,6 +115,15 @@ export const getVolunteerHours = async (authToken: any, volunteerId: any) => {
   return callExternalApi(config, authToken);
 }
 
+export const putVolunteerHours = async (authToken: any, hoursId: string, data: any) => {
+  const config: AxiosRequestConfig = {
+    url: `/api/volunteer_hours/${hoursId}`,
+    method: "PUT",
+    data: data
+  }
+  return callExternalApi(config, authToken);
+}
+
 export const getEmailAccounts = async (authToken: any, queryString: any) => {
   let url = "/api/email_accounts";
   if (queryString) {
@@ -128,6 +158,54 @@ export const postClearSerializerCache = async ( authToken: any) => {
   const config: AxiosRequestConfig = {
     url: "/api/cache/clear_serializer",
     method: "POST"
+  }
+  return callExternalApi(config, authToken);
+}
+
+export const sendVolunteerReport = async (authToken: any, volunteerIds: string | string[], attachHoursLogs: boolean = false) => {
+  // Convert single ID to array for consistency
+  const ids = Array.isArray(volunteerIds) ? volunteerIds : [volunteerIds];
+  
+  const config: AxiosRequestConfig = {
+    url: "/api/volunteer_hours/send_volunteer_report",
+    method: "POST",
+    data: { 
+      volunteer_ids: ids,
+      attach_hours_logs: attachHoursLogs
+    }
+  }
+  return callExternalApi(config, authToken);
+}
+
+export const updateVolunteerActiveState = async (authToken: any, cutoffDate?: string) => {
+  const config: AxiosRequestConfig = {
+    url: "/api/volunteers/update_active_state",
+    method: "POST",
+    data: cutoffDate ? { cutoff_date: cutoffDate } : {}
+  }
+  return callExternalApi(config, authToken);
+}
+
+export const getVolunteerListLightweight = async (authToken: any, queryString?: string) => {
+  let url = "/api/volunteers/list_lightweight";
+  if (queryString) {
+    url += `?${queryString}`;
+  }
+  const config: AxiosRequestConfig = {
+    url: url,
+    method: "GET"
+  }
+  return callExternalApi(config, authToken);
+}
+
+export const getMilalFriendListLightweight = async (authToken: any, queryString?: string) => {
+  let url = "/api/milal_friends/list_lightweight";
+  if (queryString) {
+    url += `?${queryString}`;
+  }
+  const config: AxiosRequestConfig = {
+    url: url,
+    method: "GET"
   }
   return callExternalApi(config, authToken);
 }

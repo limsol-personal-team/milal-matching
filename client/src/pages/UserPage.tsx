@@ -3,9 +3,9 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import UserDetail from '../components/UserDetail';
 import UserCreate from '../components/UserCreate';
 import UserLink from '../components/UserLink';
+import UserUpdate from '../components/UserUpdate';
 import { UserTypes } from '../utils/constants';
 
 interface TabPanelProps {
@@ -53,15 +53,15 @@ export default function UserPage() {
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Create" {...a11yProps(0)} />
-          <Tab label="Detail" {...a11yProps(1)} />
-          <Tab label="Link" {...a11yProps(2)} />
+          <Tab label="View/Update" {...a11yProps(1)} />
+          <Tab label="Link/Delink" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
         <UserCreate userType={UserTypes.Volunteers}/>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <UserDetail userType={UserTypes.Volunteers}/>
+        <UserUpdate userType={UserTypes.Volunteers}/>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <UserLink userType={UserTypes.Volunteers}/>

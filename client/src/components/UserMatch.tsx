@@ -4,16 +4,18 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { SearchScrollList, ScrollListItem, ScrollListProps } from './SearchScrollList';
-import { getEmailAccounts, getMatchData, getUserData, patchEmailAccounts, postMatchData, postUnmatchData } from '../utils/serverFunctions';
+import { getEmailAccounts, getMatchData, getUserData, patchEmailAccounts, postMatchData, postUnmatchData, getVolunteerListLightweight, getMilalFriendListLightweight } from '../utils/serverFunctions';
 import { useAuth0 } from '@auth0/auth0-react';
-import { UserTypes } from '../utils/constants';
+import { UserTypes, ACTIVE_FILTER_QUERY } from '../utils/constants';
 import { getCurrentDateTimeISO } from '../utils/dateTime';
 import AlertToaster from './AlertToaster';
 import { MatchData, MilalFriendData, VolunteerData } from '../types/modelSchema';
+import { useActiveFilter } from '../providers/activeFilterProvider';
 
 
 export default function UserDetail() {
   const { getAccessTokenSilently } = useAuth0();
+  const { showActiveOnly } = useActiveFilter();
 
   // Pull initial data into structs
   const [userNameList, setUserNameList] = useState<ScrollListItem[]>([]);
@@ -41,26 +43,43 @@ export default function UserDetail() {
   
   const pullUserData = async (userType : UserTypes) => {
     const authToken = await getAccessTokenSilently();
-    const res = await getUserData(authToken, userType);
-    if (!res.error) {
-      let nameList : ScrollListItem[] = res.data.map(({ id, first_name, last_name, is_day_matched }: 
-        VolunteerData | MilalFriendData) => ( 
-        { 
-          id: id,
-          display: first_name + " " + last_name,
-          showCheck: is_day_matched
-        })
-      );
+    const queryString = showActiveOnly ? ACTIVE_FILTER_QUERY : undefined;
+    
+    if (userType === UserTypes.Volunteers) {
+      // Use lightweight endpoint for volunteers
+      const res = await getVolunteerListLightweight(authToken, queryString);
+      if (!res.error) {
+        let nameList : ScrollListItem[] = res.data.map(({ id, first_name, last_name, is_day_matched }: any) => ( 
+          { 
+            id: id,
+            display: first_name + " " + last_name,
+            showCheck: is_day_matched
+          })
+        );
         // @ts-ignore for now
-      let dataMap = res.data.reduce((obj, item) => {
-        obj[item.id] = item;
-        return obj;
-      }, {});
-      // Initialize data structs
-      if (userType === UserTypes.Volunteers) {
+        let dataMap = res.data.reduce((obj, item) => {
+          obj[item.id] = item;
+          return obj;
+        }, {});
         setUserNameList(nameList);
         setUserDataMap(dataMap);
-      } else {
+      }
+    } else {
+      // Use lightweight endpoint for Milal friends
+      const res = await getMilalFriendListLightweight(authToken, queryString);
+      if (!res.error) {
+        let nameList : ScrollListItem[] = res.data.map(({ id, first_name, last_name, is_day_matched }: any) => ( 
+          { 
+            id: id,
+            display: first_name + " " + last_name,
+            showCheck: is_day_matched
+          })
+        );
+        // @ts-ignore for now
+        let dataMap = res.data.reduce((obj, item) => {
+          obj[item.id] = item;
+          return obj;
+        }, {});
         setFriendNameList(nameList);
         setFriendDataMap(dataMap);
       }
@@ -168,7 +187,7 @@ export default function UserDetail() {
   useEffect(() => {
     pullUserData(UserTypes.Volunteers);
     pullUserData(UserTypes.MilalFriends);
-  }, []);
+  }, [showActiveOnly]);
 
   const scrollListUserProps: ScrollListProps = {
     initialItemList: userNameList,

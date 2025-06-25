@@ -4,6 +4,7 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import HoursCreate from '../components/HoursCreate';
+import Report from '../components/Report';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -50,10 +51,14 @@ export default function HoursPage() {
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Create" {...a11yProps(0)} />
+          <Tab label="Report" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
         <HoursCreate />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
+        <Report />
       </CustomTabPanel>
     </Box>
   );

@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import UserDetail from '../components/UserDetail';
 import UserCreate from '../components/UserCreate';
+import AttendanceCalendar from '../components/AttendanceCalendar';
 import { UserTypes } from '../utils/constants';
 
 interface TabPanelProps {
@@ -53,7 +54,7 @@ export default function MilalFriendPage() {
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Create" {...a11yProps(0)} />
           <Tab label="Detail" {...a11yProps(1)} />
-          {/* <Tab label="Attendance" {...a11yProps(2)} /> */}
+          <Tab label="Attendance" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -62,9 +63,9 @@ export default function MilalFriendPage() {
       <CustomTabPanel value={value} index={1}>
         <UserDetail userType={UserTypes.MilalFriends}/>
       </CustomTabPanel>
-      {/* <CustomTabPanel value={value} index={2}>
-        <UserDetail userType={UserTypes.MilalFriends}/>
-      </CustomTabPanel> */}
+      <CustomTabPanel value={value} index={2}>
+        <AttendanceCalendar />
+      </CustomTabPanel>
     </Box>
   );
 }

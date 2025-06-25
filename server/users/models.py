@@ -21,6 +21,9 @@ class Volunteer(Person):
     graduation_year = models.PositiveSmallIntegerField(
         null=True, help_text="HS Graduation year"
     )
+    bonus_percentage = models.PositiveSmallIntegerField(
+        null=True, blank=True, help_text="Bonus percentage to apply to volunteer hours (e.g., 10 for 10% bonus)"
+    )
 
 
 class MilalFriend(Person):

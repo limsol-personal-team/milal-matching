@@ -13,16 +13,20 @@ export interface ScrollListItem {
 export interface ScrollListProps {
   initialItemList: any[]; 
   handleOptionClick: Function,
-  isMultiSelect?: boolean; 
+  isMultiSelect?: boolean;
+  selectedIds?: string[];
 }
 
-export function SearchScrollList({ initialItemList, handleOptionClick, isMultiSelect = false}: ScrollListProps) {
+export function SearchScrollList({ initialItemList, handleOptionClick, isMultiSelect = false, selectedIds}: ScrollListProps) {
 
   const [itemList, setItemList] = useState<ScrollListItem[]>(initialItemList);
   const [itemMap, setItemMap] = useState<Map<string, ScrollListItem>>(new Map());
   const [filteredData, setFilteredData] = useState<ScrollListItem[]>(initialItemList);
-  const [selectedIds, setSelectedIds] = useState<any>([]);
+  const [internalSelectedIds, setInternalSelectedIds] = useState<any>([]);
   const [filter, setFilter] = useState('');
+
+  // Use external selectedIds if provided, otherwise use internal state
+  const currentSelectedIds = selectedIds || internalSelectedIds;
 
   // Effect to update itemList when initialItemList changes
   useEffect(() => {
@@ -46,8 +50,8 @@ export function SearchScrollList({ initialItemList, handleOptionClick, isMultiSe
   const updateSelectedIds = (id : any) => {
     let tempIds: any[] = [];
     if (isMultiSelect) {
-      tempIds = [...selectedIds];
-      if(selectedIds.includes(id)) {
+      tempIds = [...currentSelectedIds];
+      if(currentSelectedIds.includes(id)) {
         tempIds.splice(tempIds.indexOf(id), 1);
       } else {
         tempIds.push(id);
@@ -55,7 +59,12 @@ export function SearchScrollList({ initialItemList, handleOptionClick, isMultiSe
     } else {
       tempIds.push(id);
     }
-    setSelectedIds(tempIds);
+    
+    // Update internal state if not using external selectedIds
+    if (!selectedIds) {
+      setInternalSelectedIds(tempIds);
+    }
+    
     handleOptionClick(tempIds);
   }
 
@@ -92,7 +101,7 @@ export function SearchScrollList({ initialItemList, handleOptionClick, isMultiSe
             renderItem={(item : ScrollListItem) => (
               <List.Item
                 style={{borderLeft: 50}}
-                className= {selectedIds.includes(item.id) ? "ant-menu-item-selected" : ""}
+                className= {currentSelectedIds.includes(item.id) ? "ant-menu-item-selected" : ""}
                 key={item.id}
                 onClick={() => {
                   updateSelectedIds(item.id);

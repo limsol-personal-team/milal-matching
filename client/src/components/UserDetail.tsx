@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import { v4 as uuid } from 'uuid';
 import { getUserData, getVolunteerHours } from '../utils/serverFunctions';
+import { renderField } from '../utils/fieldRenderer';
 
 import '../static/Antdstyle.css';
 import { useAuth0 } from '@auth0/auth0-react';
-import { UserTypes } from '../utils/constants';
+import { UserTypes, ACTIVE_FILTER_QUERY } from '../utils/constants';
 import { ScrollListProps, SearchScrollList } from './SearchScrollList';
 import { VolunteerData, VolunteerHoursData } from '../types/modelSchema';
+import { useActiveFilter } from '../providers/activeFilterProvider';
 
 export interface UserDetailProps {
   userType: UserTypes
@@ -17,6 +19,8 @@ export interface UserDetailProps {
 
 export default function UserDetail( { userType } : UserDetailProps) {
   const { getAccessTokenSilently } = useAuth0();
+  const { showActiveOnly } = useActiveFilter();
+  
   // Pull initial data into structs
   const [nameList, setNameList] = useState<Object[]>([]);
   const [usersDataMap, setData] = useState<any>({});
@@ -43,7 +47,8 @@ export default function UserDetail( { userType } : UserDetailProps) {
   
   const pullVolunteer = async () => {
     const authToken = await getAccessTokenSilently();
-    const res = await getUserData(authToken, userType);
+    const queryString = showActiveOnly ? ACTIVE_FILTER_QUERY : undefined;
+    const res = await getUserData(authToken, userType, queryString);
     if (!res.error) {
       let nameList = res.data.map(({ first_name, last_name, id }: VolunteerData) => ( 
         { 
@@ -64,7 +69,7 @@ export default function UserDetail( { userType } : UserDetailProps) {
 
   useEffect(() => {
     pullVolunteer()
-  }, []);
+  }, [showActiveOnly]);
 
   const scrollListProps: ScrollListProps = {
     initialItemList: nameList,
@@ -90,17 +95,6 @@ export default function UserDetail( { userType } : UserDetailProps) {
         />
       </ListItem>
     );
-  }
-
-  // TODO fix typing
-  const renderField = (key: string, data: any) => {
-    const keyToCheck: keyof VolunteerData = "recommended_match";
-    if (key === keyToCheck) {
-      return data.map(
-        (item : any) => `${item.name} (${item.count})`).join(", ")
-    } else {
-      return data.toString()
-    }
   }
 
   return (

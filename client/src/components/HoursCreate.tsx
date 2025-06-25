@@ -5,11 +5,12 @@ import { useEffect, useState } from 'react';
 import '../static/Antdstyle.css';
 import ScrollList from './ScrollList';
 import AlertToaster from './AlertToaster';
-import { SERVICE_TYPES, UserTypes } from '../utils/constants';
+import { SERVICE_TYPES, UserTypes, ACTIVE_FILTER_QUERY } from '../utils/constants';
 import { convertToDateTimeISO } from '../utils/dateTime';
-import { getUserData, postVolunteerHoursBulkCreate } from '../utils/serverFunctions';
+import { getUserData, postVolunteerHoursBulkCreate, getVolunteerListLightweight } from '../utils/serverFunctions';
 import { useAuth0 } from '@auth0/auth0-react';
 import { ScrollListProps, SearchScrollList } from './SearchScrollList';
+import { useActiveFilter } from '../providers/activeFilterProvider';
 
 
 interface VolunteerData {
@@ -46,6 +47,7 @@ const emptyFormValues = {
 
 export default function HoursCreate() {
   const { getAccessTokenSilently } = useAuth0();
+  const { showActiveOnly } = useActiveFilter();
 
   const [formValues, setFormValues] = useState<any>(emptyFormValues);
 
@@ -99,9 +101,10 @@ export default function HoursCreate() {
   useEffect(() => {
     const fetchData = async () => {
       const token = await getAccessTokenSilently();
-      const res = await getUserData(token, UserTypes.Volunteers);
+      const queryString = showActiveOnly ? ACTIVE_FILTER_QUERY : undefined;
+      const res = await getVolunteerListLightweight(token, queryString);
       if (!res.error) {
-        let nameList = res.data.map(({ first_name, last_name, id }: VolunteerData) => ( 
+        let nameList = res.data.map(({ first_name, last_name, id }: any) => ( 
           { 
             id: id,
             display: first_name + " " + last_name,
@@ -118,7 +121,7 @@ export default function HoursCreate() {
       }
     }
     fetchData();
-  }, []);
+  }, [showActiveOnly]);
 
   const scrollListProps: ScrollListProps = {
     initialItemList: nameList,
