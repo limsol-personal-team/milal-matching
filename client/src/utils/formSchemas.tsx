@@ -168,3 +168,24 @@ export const VolunteerHoursFormSchema = [
     }
   }
 ]
+
+export const EmailAccountFormSchema = [
+  {
+    key: "email",
+    isRequired: true,
+    props: {
+      name: "email",
+      label: "Email Address",
+      type: "email"
+    }
+  },
+  {
+    key: "display_name",
+    isRequired: false,
+    props: {
+      name: "display_name",
+      label: "Display Name",
+      type: "text"
+    }
+  }
+]

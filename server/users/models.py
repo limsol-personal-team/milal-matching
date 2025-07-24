@@ -34,5 +34,5 @@ class EmailAccount(BaseModel):
     user = models.ForeignKey("users.Volunteer", on_delete=models.SET_NULL, null=True)
     email = models.CharField(help_text="Email address", max_length=50)
     display_name = models.CharField(
-        help_text="Display name set for email account", max_length=50
+        help_text="Display name set for email account", max_length=50, blank=True
     )

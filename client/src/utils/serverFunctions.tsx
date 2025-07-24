@@ -145,6 +145,15 @@ export const patchEmailAccounts = async (authToken: any, emailId: any, data: any
   return callExternalApi(config, authToken);
 }
 
+export const postEmailAccount = async (authToken: any, data: any) => {
+  const config: AxiosRequestConfig = {
+    url: "/api/email_accounts",
+    method: "POST",
+    data: data
+  }
+  return callExternalApi(config, authToken);
+}
+
 export const postVolunteerHoursBulkCreate = async ( authToken: any, data: any) => {
   const config: AxiosRequestConfig = {
     url: "/api/volunteer_hours/bulk_create",

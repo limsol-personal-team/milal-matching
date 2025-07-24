@@ -3,6 +3,7 @@
 /**
  * deploy-to-ecr.js - Script to build and push Docker image to Amazon ECR
  * Usage: node deploy-to-ecr.js [repository] [region] [profile]
+ * Run in parent /server directory with Dockferfile
  */
 
 const { execSync } = require('child_process');

@@ -3,6 +3,7 @@
 /**
  * deploy-to-s3.js - Script to build React app and deploy to S3
  * Usage: node deploy-to-s3.js <bucket-name> [profile] [region] [cloudfront-id]
+ * Run in parent /client directory
  */
 
 const { execSync } = require('child_process');
