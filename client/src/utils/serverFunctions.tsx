@@ -103,6 +103,18 @@ export const getMatchData = async (authToken: any, queryString: any) => {
   return callExternalApi(config, authToken);
 }
 
+export const getMatchDataWithRecommendations = async (authToken: any, queryString: any) => {
+  let url = "/api/records/with_recommendations";
+  if (queryString) {
+    url += `?${queryString}`
+  }
+  const config: AxiosRequestConfig = {
+    url: url,
+    method: "GET"
+  }
+  return callExternalApi(config, authToken);
+}
+
 export const getVolunteerHours = async (authToken: any, volunteerId: any) => {
   let url = "/api/volunteer_hours";
   if (volunteerId) {

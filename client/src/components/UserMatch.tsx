@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { SearchScrollList, ScrollListItem, ScrollListProps } from './SearchScrollList';
-import { getEmailAccounts, getMatchData, getUserData, patchEmailAccounts, postMatchData, postUnmatchData, getVolunteerListLightweight, getMilalFriendListLightweight } from '../utils/serverFunctions';
+import { getEmailAccounts, getMatchData, getUserData, patchEmailAccounts, postMatchData, postUnmatchData, getVolunteerListLightweight, getMilalFriendListLightweight, getMatchDataWithRecommendations } from '../utils/serverFunctions';
 import { useAuth0 } from '@auth0/auth0-react';
 import { UserTypes, ACTIVE_FILTER_QUERY } from '../utils/constants';
 import { getCurrentDateTimeISO } from '../utils/dateTime';
@@ -25,6 +25,7 @@ export default function UserDetail() {
   const [userId, setUserId] = useState<string>("");
   const [userData, setUserData] = useState<Partial<VolunteerData>>({});
   const [userMatchList, setUserMatchList] = useState<string[]>([]);
+  const [userRecommendedMatch, setUserRecommendedMatch] = useState<any[]>([]);
 
   // Pull initial data into structs
   const [friendNameList, setFriendNameList] = useState<ScrollListItem[]>([]);
@@ -34,6 +35,7 @@ export default function UserDetail() {
   const [friendId, setFriendId] = useState<string>("");
   const [friendData, setFriendData] = useState<Partial<MilalFriendData>>({});
   const [friendMatchList, setFriendMatchList] = useState<string[]>([]);
+  const [friendRecommendedMatch, setFriendRecommendedMatch] = useState<any[]>([]);
 
   // Alerting
   const [errorStatus, setErrorStatus] = useState(false);
@@ -43,10 +45,10 @@ export default function UserDetail() {
   
   const pullUserData = async (userType : UserTypes) => {
     const authToken = await getAccessTokenSilently();
-    const queryString = showActiveOnly ? ACTIVE_FILTER_QUERY : undefined;
+    const queryString = (showActiveOnly ? ACTIVE_FILTER_QUERY + '&' : '') + 'include_day_matched=true';
     
     if (userType === UserTypes.Volunteers) {
-      // Use lightweight endpoint for volunteers
+      // Use lightweight endpoint for volunteers with is_day_matched enabled
       const res = await getVolunteerListLightweight(authToken, queryString);
       if (!res.error) {
         let nameList : ScrollListItem[] = res.data.map(({ id, first_name, last_name, is_day_matched }: any) => ( 
@@ -65,7 +67,7 @@ export default function UserDetail() {
         setUserDataMap(dataMap);
       }
     } else {
-      // Use lightweight endpoint for Milal friends
+      // Use lightweight endpoint for Milal friends with is_day_matched enabled
       const res = await getMilalFriendListLightweight(authToken, queryString);
       if (!res.error) {
         let nameList : ScrollListItem[] = res.data.map(({ id, first_name, last_name, is_day_matched }: any) => ( 
@@ -95,15 +97,28 @@ export default function UserDetail() {
     const isVolunteer = userType === UserTypes.Volunteers;
     const queryString = `${isVolunteer ? "volunteer" : "milal_friend"}=${userId}` +
       `&match_date=${getCurrentDateTimeISO(true)}`
-    const res = await getMatchData(authToken, queryString);
+    
+    // Use the new endpoint that includes recommendations
+    const res = await getMatchDataWithRecommendations(authToken, queryString);
+    
     if (!res.error) {
-      // If match is null, assuming the user is self-matched
-      let matchList : string[] = res.data.map(({ milal_friend, volunteer }: MatchData) => { 
+      // Extract match data from the matches array
+      let matchList : string[] = res.data.matches.map(({ milal_friend, volunteer }: MatchData) => { 
           const userData = isVolunteer ? milal_friend : volunteer;
           return userData ? `${userData.first_name} ${userData.last_name}` : "Self"
         }
       );
-      isVolunteer ? setUserMatchList(matchList) : setFriendMatchList(matchList);
+      
+      // Extract recommended_match data from the response
+      const recommendedMatch = res.data.recommended_match || [];
+      
+      if (isVolunteer) {
+        setUserMatchList(matchList);
+        setUserRecommendedMatch(recommendedMatch);
+      } else {
+        setFriendMatchList(matchList);
+        setFriendRecommendedMatch(recommendedMatch);
+      }
     }
   }
 
@@ -202,16 +217,18 @@ export default function UserDetail() {
   interface UserDetailInfoProps {
     detailData: Partial<VolunteerData | MilalFriendData>;
     matchList: string[];
+    recommendedMatch: any[];
   }
 
   const UserDetailInfo: React.FC<UserDetailInfoProps> = ({ 
     detailData,
-    matchList 
+    matchList,
+    recommendedMatch
   }) => (
     <>
       <div><b>Name</b>: {detailData.first_name} {detailData.last_name}</div>
       <div><b>Match</b>: {matchList.join(', ')}</div>
-      <div><b>Recommended</b>: {detailData.recommended_match?.map(
+      <div><b>Recommended</b>: {recommendedMatch?.map(
         item => `${item.name} (${item.count})`).join(", ")}</div>
     </>
   );
@@ -230,6 +247,7 @@ export default function UserDetail() {
             <UserDetailInfo
               detailData={friendData}
               matchList={friendMatchList}
+              recommendedMatch={friendRecommendedMatch}
             />
           </Grid>
           <Grid item xs={6}>
@@ -239,6 +257,7 @@ export default function UserDetail() {
             <UserDetailInfo
               detailData={userData}
               matchList={userMatchList}
+              recommendedMatch={userRecommendedMatch}
             />
           </Grid>
         </Grid>

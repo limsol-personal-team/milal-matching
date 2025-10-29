@@ -11,13 +11,22 @@
 
 FROM python:3.10-slim
 
-# Install redis
-
-RUN apt-get update && apt-get install -y redis
-
-# Install PostGres depedencies for psycop
-
-RUN apt install -y python3-dev libpq-dev gcc
+# Install all system dependencies in one RUN command to reduce image layers
+RUN apt-get update && apt-get install -y \
+    # Redis for Django caching and Celery task queue
+    redis \
+    # LibreOffice Writer for DOCX to PDF conversion
+    libreoffice-writer \
+    # LibreOffice Common libraries required by Writer
+    libreoffice-common \
+    # Python dev headers for C extension compilation
+    python3-dev \
+    # PostgreSQL dev libraries for psycopg2
+    libpq-dev \
+    # GCC compiler for Python C extensions
+    gcc \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Setup and start django server. Expose 8000
 

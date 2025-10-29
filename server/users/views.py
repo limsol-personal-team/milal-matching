@@ -6,10 +6,11 @@ from authz.permissions import HasAdminPermission
 from users.serializers import EmailAccountSerializer
 from users.models import Volunteer, MilalFriend, EmailAccount
 from users.serializers import VolunteerSerializer, MilalFriendSerializer, VolunteerListSerializer, MilalFriendListSerializer
-from records.models import VolunteerHours
+from records.models import VolunteerHours, MilalMatching
 from django.utils import timezone
 from datetime import timedelta
 from datetime import datetime
+from django.db.models import Prefetch
 
 
 class VolunteerViewSet(viewsets.ModelViewSet):
@@ -92,9 +93,28 @@ class VolunteerViewSet(viewsets.ModelViewSet):
         """
         Return a lightweight list of volunteers with only ID and name.
         Useful for populating dropdowns and lists without loading full volunteer data.
+        
+        Query parameters:
+        - include_day_matched: boolean (default: false) - whether to include is_day_matched field
         """
+        from django.utils import timezone
+        
+        include_day_matched = request.query_params.get('include_day_matched', 'false').lower() == 'true'
+        
         queryset = self.filter_queryset(self.get_queryset())
-        serializer = VolunteerListSerializer(queryset, many=True)
+        
+        if include_day_matched:
+            # Prefetch today's matches to avoid N+1 queries
+            local_date = timezone.localtime(timezone.now()).date()
+            queryset = queryset.prefetch_related(
+                Prefetch(
+                    'milalmatching_set',
+                    queryset=MilalMatching.objects.filter(match_date=local_date),
+                    to_attr='today_matches'
+                )
+            )
+        
+        serializer = VolunteerListSerializer(queryset, many=True, context={'include_day_matched': include_day_matched})
         return Response(serializer.data)
 
 
@@ -118,9 +138,28 @@ class MilalFriendViewSet(viewsets.ModelViewSet):
         """
         Return a lightweight list of Milal friends with only ID and name.
         Useful for populating dropdowns and lists without loading full Milal friend data.
+        
+        Query parameters:
+        - include_day_matched: boolean (default: false) - whether to include is_day_matched field
         """
+        from django.utils import timezone
+        
+        include_day_matched = request.query_params.get('include_day_matched', 'false').lower() == 'true'
+        
         queryset = self.filter_queryset(self.get_queryset())
-        serializer = MilalFriendListSerializer(queryset, many=True)
+        
+        if include_day_matched:
+            # Prefetch today's matches to avoid N+1 queries
+            local_date = timezone.localtime(timezone.now()).date()
+            queryset = queryset.prefetch_related(
+                Prefetch(
+                    'milalmatching_set',
+                    queryset=MilalMatching.objects.filter(match_date=local_date),
+                    to_attr='today_matches'
+                )
+            )
+        
+        serializer = MilalFriendListSerializer(queryset, many=True, context={'include_day_matched': include_day_matched})
         return Response(serializer.data)
 
 

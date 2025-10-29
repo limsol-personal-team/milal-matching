@@ -112,6 +112,76 @@ class MilalMatchingViewSet(viewsets.ModelViewSet):
         # Customize response if needed
         return Response(status=status.HTTP_200_OK)
 
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path="with_recommendations",
+        url_name="with_recommendations",
+    )
+    def with_recommendations(self, request):
+        """
+        Get match data with recommendations for a specific user.
+        Returns the normal match list plus a 'recommended_match' key with user recommendations.
+        """
+        from users.models import Volunteer, MilalFriend
+        from users.serializers import VolunteerSerializer, MilalFriendSerializer
+        
+        volunteer_id = request.query_params.get('volunteer')
+        milal_friend_id = request.query_params.get('milal_friend')
+        
+        if not volunteer_id and not milal_friend_id:
+            return Response(
+                {'error': 'Either volunteer or milal_friend parameter is required'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if volunteer_id and milal_friend_id:
+            return Response(
+                {'error': 'Only one of volunteer or milal_friend parameter should be provided'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            # Get the normal match data using the existing list method
+            queryset = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(queryset, many=True)
+            match_data = serializer.data
+            
+            # Get user recommendations
+            recommended_match = []
+            if volunteer_id:
+                try:
+                    volunteer = Volunteer.objects.get(id=volunteer_id)
+                    volunteer_serializer = VolunteerSerializer(volunteer)
+                    recommended_match = volunteer_serializer.data.get('recommended_match', [])
+                except Volunteer.DoesNotExist:
+                    return Response(
+                        {'error': 'Volunteer not found'}, 
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+            else:  # milal_friend_id
+                try:
+                    milal_friend = MilalFriend.objects.get(id=milal_friend_id)
+                    milal_friend_serializer = MilalFriendSerializer(milal_friend)
+                    recommended_match = milal_friend_serializer.data.get('recommended_match', [])
+                except MilalFriend.DoesNotExist:
+                    return Response(
+                        {'error': 'MilalFriend not found'}, 
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+            
+            # Return match data with recommendations
+            return Response({
+                'matches': match_data,
+                'recommended_match': recommended_match
+            })
+            
+        except Exception as e:
+            return Response(
+                {'error': f'An error occurred: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 class VolunteerHoursViewSet(viewsets.ModelViewSet):
     """
     API endpoint for managing volunteer hours
