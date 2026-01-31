@@ -108,6 +108,86 @@ brew install redis
 redis-server
 ```
 
+## Django Management Commands
+
+Custom management commands available in the Django server. All commands are run from the `server/` directory.
+
+### `filter_recent_users`
+
+Filter volunteers who have service records within a specified month/year range.
+
+```bash
+python manage.py filter_recent_users [--month MONTH] [--year YEAR]
+```
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `--month` | No | Month to filter from (1-12). Defaults to current month. |
+| `--year` | No | Year to filter from. Defaults to current year. |
+
+Outputs a list of volunteers with their email addresses and most recent service date.
+
+```bash
+# Example: find volunteers active since June 2025
+python manage.py filter_recent_users --month 6 --year 2025
+```
+
+### `get_users_by_emails`
+
+Look up volunteer names from a list of email addresses in a file.
+
+```bash
+python manage.py get_users_by_emails <email_file>
+```
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `email_file` | Yes | Path to a file containing one email per line. |
+
+Outputs the first and last name of the volunteer associated with each email.
+
+```bash
+# Example
+python manage.py get_users_by_emails /path/to/emails.txt
+```
+
+Input file format:
+```
+volunteer1@example.com
+volunteer2@example.com
+```
+
+### `export_volunteer_hours`
+
+Generate volunteer service hour reports in text, Word, or PDF format.
+
+```bash
+python manage.py export_volunteer_hours <volunteer_id> [OPTIONS]
+```
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `volunteer_id` | Yes | UUID of the volunteer. |
+| `--start_date` | No | Filter from this date (YYYY-MM-DD). |
+| `--end_date` | No | Filter up to this date (YYYY-MM-DD). |
+| `--docx` | No | Generate a Word document report. |
+| `--docx_output` | No | Word output filename. Default: `volunteer_hours_report.docx` |
+| `--pdf` | No | Generate a PDF report (requires LibreOffice). |
+| `--pdf_output` | No | PDF output filename. Default: `volunteer_hours_report.pdf` |
+| `--logs` | No | Generate a detailed text log of service entries. |
+| `--logs_output` | No | Text log filename. Default: `volunteer_hours_logs.txt` |
+
+```bash
+# Generate all formats
+python manage.py export_volunteer_hours <uuid> --docx --pdf --logs
+
+# PDF only with date range
+python manage.py export_volunteer_hours <uuid> --pdf --start_date 2024-01-01 --end_date 2024-12-31
+
+# Text logs with custom filename
+python manage.py export_volunteer_hours <uuid> --logs --logs_output my_report.txt
+```
+
 ## GIT Tips
 
 If you are in `main`, create and checkout into your own branch. If you already have your own branch, remove `-b` flag :
