@@ -1,8 +1,5 @@
-import { List, Skeleton } from 'antd';
 import React, { useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import '../static/Antdstyle.css';
-import { TextField } from '@mui/material';
+import { TextField, Table, TableBody, TableRow, TableCell, TableContainer, Paper } from '@mui/material';
 
 export interface ScrollListItem {
   id: string;
@@ -11,7 +8,7 @@ export interface ScrollListItem {
 }
 
 export interface ScrollListProps {
-  initialItemList: any[]; 
+  initialItemList: any[];
   handleOptionClick: Function,
   isMultiSelect?: boolean;
   selectedIds?: string[];
@@ -45,7 +42,7 @@ export function SearchScrollList({ initialItemList, handleOptionClick, isMultiSe
         item.display.toLowerCase().includes(filter.toLowerCase())
       )
     );
-  }, [filter, itemList]); 
+  }, [filter, itemList]);
 
   const updateSelectedIds = (id : any) => {
     let tempIds: any[] = [];
@@ -59,12 +56,12 @@ export function SearchScrollList({ initialItemList, handleOptionClick, isMultiSe
     } else {
       tempIds.push(id);
     }
-    
+
     // Update internal state if not using external selectedIds
     if (!selectedIds) {
       setInternalSelectedIds(tempIds);
     }
-    
+
     handleOptionClick(tempIds);
   }
 
@@ -76,48 +73,28 @@ export function SearchScrollList({ initialItemList, handleOptionClick, isMultiSe
         fullWidth
         value={filter}
         onChange={(e) => setFilter(e.target.value)}
-        style={{ marginBottom: '20px' }}
+        style={{ marginBottom: '8px' }}
       />
-      <div
-        id="scrollableDiv"
-        style={{
-          height: 200,
-          width: "100%",
-          overflow: 'auto',
-          padding: '0 16px',
-          border: '1px solid rgba(140, 140, 140, 0.35)'
-        }}
-      >
-        <InfiniteScroll
-          dataLength={5}
-          next={()=>{}}
-          hasMore={false}
-          loader={<Skeleton />}
-          scrollableTarget="scrollableDiv"
-        >
-          <List
-            // @ts-ignore for now
-            dataSource={filteredData}
-            renderItem={(item : ScrollListItem) => (
-              <List.Item
-                style={{borderLeft: 50}}
-                className= {currentSelectedIds.includes(item.id) ? "ant-menu-item-selected" : ""}
+      <TableContainer component={Paper} sx={{ maxHeight: 200, maxWidth: '100%', overflow: 'auto' }}>
+        <Table size="small" sx={{ tableLayout: 'fixed', width: '100%' }}>
+          <TableBody>
+            {filteredData.map((item: ScrollListItem) => (
+              <TableRow
                 key={item.id}
-                onClick={() => {
-                  updateSelectedIds(item.id);
-                  }}
+                hover
+                selected={currentSelectedIds.includes(item.id)}
+                onClick={() => updateSelectedIds(item.id)}
+                sx={{ cursor: 'pointer' }}
               >
-                <List.Item.Meta
-                  style={{margin: "-5px 0 -5px 5px", fontFamily: '3px'}}
-                  // @ts-ignore for now
-                  title={`${item.showCheck ? '✅ ' : ''}${item.display}`}
-                />
-              </List.Item>
-            )}
-          />
-        </InfiniteScroll>
-      </div>
-      <br></br>
+                <TableCell sx={{ py: 0.5, wordBreak: 'break-word' }}>
+                  {item.showCheck ? '✅ ' : ''}{item.display}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <br />
     </>
   )
 }

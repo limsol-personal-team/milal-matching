@@ -48,8 +48,8 @@ export default function UserDetail() {
     const queryString = (showActiveOnly ? ACTIVE_FILTER_QUERY + '&' : '') + 'include_day_matched=true';
     
     if (userType === UserTypes.Volunteers) {
-      // Use lightweight endpoint for volunteers with is_day_matched enabled
-      const res = await getVolunteerListLightweight(authToken, queryString);
+      // Use lightweight endpoint for volunteers with is_day_matched enabled, filtered to checked-in only
+      const res = await getVolunteerListLightweight(authToken, queryString + '&checked_in_today=true');
       if (!res.error) {
         let nameList : ScrollListItem[] = res.data.map(({ id, first_name, last_name, is_day_matched }: any) => ( 
           { 
@@ -241,6 +241,7 @@ export default function UserDetail() {
       <div style={{margin: '0 -30px'}}>
         <Grid container spacing={2} justifyContent='center'>
           <Grid item xs={6}>
+            <Typography variant="subtitle1" fontWeight="bold">Milal Friends</Typography>
             <SearchScrollList
               {...scrollListFriendProps}
             />
@@ -251,6 +252,7 @@ export default function UserDetail() {
             />
           </Grid>
           <Grid item xs={6}>
+            <Typography variant="subtitle1" fontWeight="bold">Volunteers</Typography>
             <SearchScrollList
               {...scrollListUserProps}
             />

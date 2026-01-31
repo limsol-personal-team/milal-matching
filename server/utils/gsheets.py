@@ -1,13 +1,5 @@
-from django.conf import settings
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-
-SATURDAY_CHECKIN_SPREADSHEET_ID = settings.GSHEET_CONFIG[
-    "SATURDAY_CHECKIN_SPREADSHEET_ID"
-]
-SATURDAY_CHECKIN_SPREADSHEET_RANGE = settings.GSHEET_CONFIG[
-    "SATURDAY_CHECKIN_SPREADSHEET_RANGE"
-]
 
 
 def get_service_creds():

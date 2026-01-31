@@ -100,9 +100,19 @@ class VolunteerViewSet(viewsets.ModelViewSet):
         from django.utils import timezone
         
         include_day_matched = request.query_params.get('include_day_matched', 'false').lower() == 'true'
-        
+        checked_in_today = request.query_params.get('checked_in_today', 'false').lower() == 'true'
+
         queryset = self.filter_queryset(self.get_queryset())
-        
+
+        if checked_in_today:
+            local_date = timezone.localtime(timezone.now()).date()
+            checked_in_ids = VolunteerHours.objects.filter(
+                service_type=VolunteerHours.SATURDAY_AGAPE[0],
+                service_date__date=local_date,
+                volunteer__isnull=False,
+            ).values_list('volunteer', flat=True)
+            queryset = queryset.filter(id__in=checked_in_ids)
+
         if include_day_matched:
             # Prefetch today's matches to avoid N+1 queries
             local_date = timezone.localtime(timezone.now()).date()
@@ -113,7 +123,7 @@ class VolunteerViewSet(viewsets.ModelViewSet):
                     to_attr='today_matches'
                 )
             )
-        
+
         serializer = VolunteerListSerializer(queryset, many=True, context={'include_day_matched': include_day_matched})
         return Response(serializer.data)
 

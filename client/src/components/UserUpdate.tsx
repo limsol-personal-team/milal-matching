@@ -1,7 +1,6 @@
-import { Button, FormControl, Stack, TextField, Box, Typography, FormControlLabel, Switch, ListItem, ListItemText, Accordion, AccordionSummary, AccordionDetails, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Button, FormControl, Stack, TextField, Box, Typography, FormControlLabel, Switch, Accordion, AccordionSummary, AccordionDetails, ToggleButton, ToggleButtonGroup, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import React, { useState, useEffect } from 'react';
-import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import { v4 as uuid } from 'uuid';
 import AlertToaster from './AlertToaster';
 import { getUserData, putUserData, getVolunteerHours, getEmailAccounts, getVolunteerListLightweight, deleteUserData } from '../utils/serverFunctions';
@@ -341,111 +340,63 @@ export default function UserUpdate({ userType }: UserUpdateProps) {
     }
   };
 
-  const renderHoursRow = (props: ListChildComponentProps) => {
-    const {data, index, style} = props;
-    const item = data[index];
-    return (
-      <ListItem 
-        style={style} 
-        sx={{ border: '1px solid #808080', cursor: 'pointer' }} 
-        key={index} 
-        component="div" 
-        disablePadding
-        onClick={() => handleHoursClick(item)}
-      >
-        <ListItemText 
-          primary={`Created: ${item.created_at}`} 
-          secondary={
-            <Typography variant="body2">
-                Service Date: {item.service_date}
-                <br></br>
-                Type: {item.service_type} 
-                <br></br>
-                Hours: {item.hours}
-            </Typography>
-        } 
-        />
-      </ListItem>
-    );
-  };
+  const HoursTable = ({ clickable }: { clickable?: boolean }) => (
+    <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+      <Table size="small" stickyHeader>
+        <TableHead>
+          <TableRow>
+            <TableCell><b>Service Date</b></TableCell>
+            <TableCell><b>Type</b></TableCell>
+            <TableCell><b>Hours</b></TableCell>
+            <TableCell><b>Description</b></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {userVolunteerHours.map((item) => (
+            <TableRow
+              key={item.id}
+              hover={clickable}
+              onClick={clickable ? () => handleHoursClick(item) : undefined}
+              sx={clickable ? { cursor: 'pointer' } : undefined}
+            >
+              <TableCell>{new Date(item.service_date).toLocaleDateString()}</TableCell>
+              <TableCell>{item.service_type}</TableCell>
+              <TableCell>{item.hours}</TableCell>
+              <TableCell>{item.description || ''}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
 
-  const renderHoursRowReadOnly = (props: ListChildComponentProps) => {
-    const {data, index, style} = props;
-    const item = data[index];
-    return (
-      <ListItem 
-        style={style} 
-        sx={{ border: '1px solid #808080' }} 
-        key={index} 
-        component="div" 
-        disablePadding
-      >
-        <ListItemText 
-          primary={`Created: ${item.created_at}`} 
-          secondary={
-            <Typography variant="body2">
-                Service Date: {item.service_date}
-                <br></br>
-                Type: {item.service_type} 
-                <br></br>
-                Hours: {item.hours}
-            </Typography>
-        } 
-        />
-      </ListItem>
-    );
-  };
-
-  const renderEmailRow = (props: ListChildComponentProps) => {
-    const {data, index, style} = props;
-    const item = data[index];
-    return (
-      <ListItem 
-        style={style} 
-        sx={{ border: '1px solid #808080', cursor: 'pointer' }} 
-        key={index} 
-        component="div" 
-        disablePadding
-        onClick={() => handleEmailClick(item)}
-      >
-        <ListItemText 
-          primary={`Email: ${item.email}`} 
-          secondary={
-            <Typography variant="body2">
-                Display Name: {item.display_name}
-                <br></br>
-                Created: {item.created_at}
-            </Typography>
-        } 
-        />
-      </ListItem>
-    );
-  };
-
-  const renderEmailRowReadOnly = (props: ListChildComponentProps) => {
-    const {data, index, style} = props;
-    const item = data[index];
-    return (
-      <ListItem 
-        style={style} 
-        sx={{ border: '1px solid #808080' }} 
-        key={index} 
-        component="div" 
-        disablePadding
-      >
-        <ListItemText 
-          primary={`Email: ${item.email}`} 
-          secondary={
-            <Typography variant="body2">
-                Display Name: {item.display_name}
-                <br></br>
-                Created: {item.created_at}
-            </Typography>
-        } 
-        />
-      </ListItem>
-    );
-  };
+  const EmailsTable = ({ clickable }: { clickable?: boolean }) => (
+    <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+      <Table size="small" stickyHeader>
+        <TableHead>
+          <TableRow>
+            <TableCell><b>Email</b></TableCell>
+            <TableCell><b>Display Name</b></TableCell>
+            <TableCell><b>Created</b></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {userLinkedEmails.map((item) => (
+            <TableRow
+              key={item.id}
+              hover={clickable}
+              onClick={clickable ? () => handleEmailClick(item) : undefined}
+              sx={clickable ? { cursor: 'pointer' } : undefined}
+            >
+              <TableCell>{item.email}</TableCell>
+              <TableCell>{item.display_name}</TableCell>
+              <TableCell>{new Date(item.created_at).toLocaleDateString()}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
 
   return (
     <>
@@ -517,19 +468,7 @@ export default function UserUpdate({ userType }: UserUpdateProps) {
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Box
-                      sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
-                    >
-                      <FixedSizeList
-                        height={400}
-                        width={360}
-                        itemSize={90}
-                        itemCount={userVolunteerHours.length}
-                        itemData={userVolunteerHours}
-                      >
-                        {renderHoursRowReadOnly}
-                      </FixedSizeList>
-                    </Box>
+                    <HoursTable />
                   </AccordionDetails>
                 </Accordion>
               )}
@@ -543,19 +482,7 @@ export default function UserUpdate({ userType }: UserUpdateProps) {
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Box
-                      sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
-                    >
-                      <FixedSizeList
-                        height={400}
-                        width={360}
-                        itemSize={90}
-                        itemCount={userLinkedEmails.length}
-                        itemData={userLinkedEmails}
-                      >
-                        {renderEmailRowReadOnly}
-                      </FixedSizeList>
-                    </Box>
+                    <EmailsTable />
                   </AccordionDetails>
                 </Accordion>
               )}
@@ -620,19 +547,7 @@ export default function UserUpdate({ userType }: UserUpdateProps) {
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Box
-                      sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
-                    >
-                      <FixedSizeList
-                        height={400}
-                        width={360}
-                        itemSize={90}
-                        itemCount={userVolunteerHours.length}
-                        itemData={userVolunteerHours}
-                      >
-                        {renderHoursRow}
-                      </FixedSizeList>
-                    </Box>
+                    <HoursTable clickable />
                   </AccordionDetails>
                 </Accordion>
               )}
@@ -646,19 +561,7 @@ export default function UserUpdate({ userType }: UserUpdateProps) {
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Box
-                      sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
-                    >
-                      <FixedSizeList
-                        height={400}
-                        width={360}
-                        itemSize={90}
-                        itemCount={userLinkedEmails.length}
-                        itemData={userLinkedEmails}
-                      >
-                        {renderEmailRow}
-                      </FixedSizeList>
-                    </Box>
+                    <EmailsTable clickable />
                   </AccordionDetails>
                 </Accordion>
               )}

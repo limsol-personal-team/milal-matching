@@ -12,6 +12,7 @@
 # django dev db
 *.sqlite3
 *.db
+*.rdb
 
 # user config
 /.vscode

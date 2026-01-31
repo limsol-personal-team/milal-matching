@@ -25,7 +25,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 # Need to handle static files since DEBUG false, django stops handling static files
 # for you. For now, keep always true. https://tinyurl.com/y8n63uf8
-DEBUG = os.getenv("DEBUG_ENABLE").strip().lower() == "true"
+DEBUG = os.getenv("DEBUG_ENABLE", "false").strip().lower() == "true"
 ALLOWED_HOSTS = ["*"]
 
 
@@ -178,7 +178,7 @@ SIMPLE_JWT = {
 
 
 # Import env dependent settings
-if os.getenv("PROD_ENV").strip().lower() == "true":
+if os.getenv("PROD_ENV", "false").strip().lower() == "true":
     from config.prod_settings import *
 else:
     from config.dev_settings import *

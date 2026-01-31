@@ -2,7 +2,6 @@ import re
 import redis
 from django.conf import settings
 from django.utils import timezone
-from django.shortcuts import render
 from django.core.cache import cache
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
@@ -13,7 +12,8 @@ from rest_framework.views import APIView
 import uuid
 from utils.throttling import NoThrottle
 from utils.decorators import SERIALIZER_CACHE_KEY
-from utils.gsheets import SATURDAY_CHECKIN_SPREADSHEET_ID, get_gsheets_service
+from users.models import EmailAccount
+from records.models import VolunteerHours
 
 # Create your views here.
 
@@ -69,28 +69,44 @@ class AuthViewSet(viewsets.ViewSet):
         url_name="sign_in_record",
     )
     def sign_in_record(self, request):
-        if request.method == "POST":
-            curr_time = timezone.localtime(timezone.now()).strftime(
-                "%Y-%m-%d %H:%M:%S%z"
+        name = request.data.get("name")
+        email = request.data.get("email")
+
+        if not name or not email:
+            return Response(
+                {"error": "name and email are required"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
-            values = [
-                [request.data["name"], request.data["email"], curr_time],
-            ]
-            body = {"values": values}
 
-            # Call the Sheets API
-            service = get_gsheets_service()
-            sheet = service.spreadsheets()
-            sheet.values().append(
-                spreadsheetId=SATURDAY_CHECKIN_SPREADSHEET_ID,
-                range="Sheet1!A:C",
-                valueInputOption="USER_ENTERED",
-                body=body,
-            ).execute()
+        now = timezone.localtime(timezone.now())
+        today = now.date()
 
-            return Response(status=200)
+        # Get or create the email account
+        account, created = EmailAccount.objects.get_or_create(email=email)
+        if created:
+            account.display_name = name
+            account.save(update_fields=["display_name"])
 
-        return Response(status=405)
+        # Deduplicate: skip if already checked in today
+        already_checked_in = VolunteerHours.objects.filter(
+            email=account,
+            service_type=VolunteerHours.SATURDAY_AGAPE[0],
+            service_date__date=today,
+        ).exists()
+
+        if already_checked_in:
+            return Response(status=status.HTTP_200_OK)
+
+        # Create volunteer hours record
+        VolunteerHours.objects.create(
+            volunteer=account.user,
+            email=account,
+            service_type=VolunteerHours.SATURDAY_AGAPE[0],
+            service_date=now,
+            hours=VolunteerHours.SATURDAY_AGAPE[1],
+        )
+
+        return Response(status=status.HTTP_201_CREATED)
 
 class CacheViewSet(viewsets.ViewSet):
     SERIALIZER_CACHE_KEY_REGEX = f".*{SERIALIZER_CACHE_KEY}.*"

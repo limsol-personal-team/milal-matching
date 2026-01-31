@@ -127,6 +127,14 @@ export const getVolunteerHours = async (authToken: any, volunteerId: any) => {
   return callExternalApi(config, authToken);
 }
 
+export const getCheckinHistory = async (authToken: any, date: string) => {
+  const config: AxiosRequestConfig = {
+    url: `/api/volunteer_hours/checkin_history?date=${date}`,
+    method: "GET"
+  }
+  return callExternalApi(config, authToken);
+}
+
 export const putVolunteerHours = async (authToken: any, hoursId: string, data: any) => {
   const config: AxiosRequestConfig = {
     url: `/api/volunteer_hours/${hoursId}`,

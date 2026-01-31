@@ -227,6 +227,43 @@ class VolunteerHoursViewSet(viewsets.ModelViewSet):
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
 
+    @action(detail=False, methods=["get"], url_path="checkin_history", url_name="checkin_history")
+    def checkin_history(self, request):
+        """
+        Return saturday agape check-in records for a given date,
+        with email display_name and address included.
+        """
+        date = request.query_params.get("date")
+        if not date:
+            return Response(
+                {"error": "date query parameter is required (YYYY-MM-DD)"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        records = VolunteerHours.objects.filter(
+            service_type=VolunteerHours.SATURDAY_AGAPE[0],
+            service_date__date=date,
+        ).select_related("email", "volunteer").order_by("service_date")
+
+        data = []
+        for record in records:
+            # Prefer volunteer full name, fall back to email display_name
+            if record.volunteer:
+                name = f"{record.volunteer.first_name} {record.volunteer.last_name}"
+            elif record.email and record.email.display_name:
+                name = record.email.display_name
+            else:
+                name = ""
+
+            data.append({
+                "id": str(record.id),
+                "service_date": record.service_date,
+                "display_name": name,
+                "email": record.email.email if record.email else "",
+            })
+
+        return Response(data, status=status.HTTP_200_OK)
+
     @action(detail=False, methods=['post'])
     def send_volunteer_report(self, request):
         """
