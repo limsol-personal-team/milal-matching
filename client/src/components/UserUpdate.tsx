@@ -1,5 +1,6 @@
-import { Button, FormControl, Stack, TextField, Box, Typography, FormControlLabel, Switch, Accordion, AccordionSummary, AccordionDetails, ToggleButton, ToggleButtonGroup, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Button, FormControl, Stack, TextField, Box, Typography, FormControlLabel, Switch, Accordion, AccordionSummary, AccordionDetails, ToggleButton, ToggleButtonGroup, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import React, { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import AlertToaster from './AlertToaster';
@@ -299,6 +300,29 @@ export default function UserUpdate({ userType }: UserUpdateProps) {
     }
   };
 
+  const copyVolunteerHoursToClipboard = async () => {
+    // Create tab-separated text with headers
+    const headers = ['Service Date', 'Type', 'Hours', 'Description'].join('\t');
+    const rows = userVolunteerHours.map((item) => {
+      return [
+        new Date(item.service_date).toLocaleDateString(),
+        item.service_type,
+        item.hours,
+        item.description || ''
+      ].join('\t');
+    });
+
+    const tsvContent = [headers, ...rows].join('\n');
+
+    try {
+      await navigator.clipboard.writeText(tsvContent);
+      setSuccessStatus(true);
+    } catch (err) {
+      setErrorStatus(true);
+      console.error('Failed to copy to clipboard:', err);
+    }
+  };
+
   useEffect(() => {
     loadUsersList();
   }, [showActiveOnly]);
@@ -442,15 +466,17 @@ export default function UserUpdate({ userType }: UserUpdateProps) {
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Typography variant="h6" sx={{ textDecoration: 'underline' }} gutterBottom>
-                    User Data: 
-                  </Typography>
-                  <div>
-                    { selectedUserData && Object.keys(selectedUserData).map((key) => (
-                      // @ts-ignore for now
-                      <p key={uuid()}>{key}: {selectedUserData[key] && renderField(key, selectedUserData[key])}</p> // Convert to string for bools
-                    ))}
-                  </div>
+                  <Table size="small">
+                    <TableBody>
+                      { selectedUserData && Object.keys(selectedUserData).map((key) => (
+                        <TableRow key={uuid()}>
+                          <TableCell sx={{ fontWeight: 'bold', width: '30%' }}>{key}</TableCell>
+                          {/* @ts-ignore */}
+                          <TableCell>{selectedUserData[key] && renderField(key, selectedUserData[key])}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </AccordionDetails>
               </Accordion>
               
@@ -458,14 +484,26 @@ export default function UserUpdate({ userType }: UserUpdateProps) {
               {userType === UserTypes.Volunteers && userVolunteerHours.length !== 0 && (
                 <Accordion defaultExpanded={false} sx={{ mt: 2 }}>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                      Volunteer Hours
-                      {selectedUserData && (
-                        <Typography variant="body2" sx={{ ml: 1, color: 'text.secondary' }}>
-                          (Total: {selectedUserData.hours}{selectedUserData.bonus_hours > 0 ? ` = ${selectedUserData.hours - selectedUserData.bonus_hours} + ${selectedUserData.bonus_hours} bonus` : ''})
-                        </Typography>
-                      )}
-                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', mr: 1 }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                        Volunteer Hours
+                        {selectedUserData && (
+                          <Typography variant="body2" component="span" sx={{ ml: 1, color: 'text.secondary' }}>
+                            (Total: {selectedUserData.hours}{selectedUserData.bonus_hours > 0 ? ` = ${selectedUserData.hours - selectedUserData.bonus_hours} + ${selectedUserData.bonus_hours} bonus` : ''})
+                          </Typography>
+                        )}
+                      </Typography>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          copyVolunteerHoursToClipboard();
+                        }}
+                        title="Copy table to clipboard"
+                      >
+                        <ContentCopyIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
                   </AccordionSummary>
                   <AccordionDetails>
                     <HoursTable />
@@ -537,14 +575,26 @@ export default function UserUpdate({ userType }: UserUpdateProps) {
               {userType === UserTypes.Volunteers && userVolunteerHours.length !== 0 && (
                 <Accordion defaultExpanded={false} sx={{ mt: 2 }}>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                      Volunteer Hours - Click to Update
-                      {selectedUserData && (
-                        <Typography variant="body2" sx={{ ml: 1, color: 'text.secondary' }}>
-                          (Total: {selectedUserData.hours}{selectedUserData.bonus_hours > 0 ? ` = ${selectedUserData.hours - selectedUserData.bonus_hours} + ${selectedUserData.bonus_hours} bonus` : ''})
-                        </Typography>
-                      )}
-                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', mr: 1 }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                        Volunteer Hours - Click to Update
+                        {selectedUserData && (
+                          <Typography variant="body2" component="span" sx={{ ml: 1, color: 'text.secondary' }}>
+                            (Total: {selectedUserData.hours}{selectedUserData.bonus_hours > 0 ? ` = ${selectedUserData.hours - selectedUserData.bonus_hours} + ${selectedUserData.bonus_hours} bonus` : ''})
+                          </Typography>
+                        )}
+                      </Typography>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          copyVolunteerHoursToClipboard();
+                        }}
+                        title="Copy table to clipboard"
+                      >
+                        <ContentCopyIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
                   </AccordionSummary>
                   <AccordionDetails>
                     <HoursTable clickable />

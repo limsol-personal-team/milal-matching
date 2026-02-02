@@ -75,8 +75,8 @@ export function SearchScrollList({ initialItemList, handleOptionClick, isMultiSe
         onChange={(e) => setFilter(e.target.value)}
         style={{ marginBottom: '8px' }}
       />
-      <TableContainer component={Paper} sx={{ maxHeight: 200, maxWidth: '100%', overflow: 'auto' }}>
-        <Table size="small" sx={{ tableLayout: 'fixed', width: '100%' }}>
+      <TableContainer component={Paper} sx={{ maxHeight: 200, minHeight: 200 }}>
+        <Table size="small">
           <TableBody>
             {filteredData.map((item: ScrollListItem) => (
               <TableRow
@@ -86,7 +86,7 @@ export function SearchScrollList({ initialItemList, handleOptionClick, isMultiSe
                 onClick={() => updateSelectedIds(item.id)}
                 sx={{ cursor: 'pointer' }}
               >
-                <TableCell sx={{ py: 0.5, wordBreak: 'break-word' }}>
+                <TableCell sx={{ py: 0.5 }}>
                   {item.showCheck ? '✅ ' : ''}{item.display}
                 </TableCell>
               </TableRow>

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { getUserData, getVolunteerHours } from '../utils/serverFunctions';
 import { renderField } from '../utils/fieldRenderer';
+
 import { useAuth0 } from '@auth0/auth0-react';
 import { UserTypes, ACTIVE_FILTER_QUERY } from '../utils/constants';
 import { ScrollListProps, SearchScrollList } from './SearchScrollList';
@@ -17,7 +18,7 @@ export interface UserDetailProps {
 export default function UserDetail( { userType } : UserDetailProps) {
   const { getAccessTokenSilently } = useAuth0();
   const { showActiveOnly } = useActiveFilter();
-  
+
   // Pull initial data into structs
   const [nameList, setNameList] = useState<Object[]>([]);
   const [usersDataMap, setData] = useState<any>({});
@@ -41,14 +42,14 @@ export default function UserDetail( { userType } : UserDetailProps) {
       }
     }
   }
-  
+
   const pullVolunteer = async () => {
     const authToken = await getAccessTokenSilently();
     const queryString = showActiveOnly ? ACTIVE_FILTER_QUERY : undefined;
     const res = await getUserData(authToken, userType, queryString);
     if (!res.error) {
-      let nameList = res.data.map(({ first_name, last_name, id }: VolunteerData) => ( 
-        { 
+      let nameList = res.data.map(({ first_name, last_name, id }: VolunteerData) => (
+        {
           id: id,
           display: first_name + " " + last_name,
         })
@@ -82,12 +83,19 @@ export default function UserDetail( { userType } : UserDetailProps) {
       <Typography variant="h6" sx={{ textDecoration: 'underline' }} gutterBottom>
         User Data:
       </Typography>
-      <div>
-        { userData && Object.keys(userData).map((key) => (
-          // @ts-ignore for now
-          <p key={uuid()}>{key}: {userData[key] && renderField(key, userData[key])}</p> // Convert to string for bools
-        ))}
-      </div>
+      <TableContainer component={Paper} sx={{ mt: 1, mb: 2 }}>
+        <Table size="small">
+          <TableBody>
+            { userData && Object.keys(userData).map((key) => (
+              <TableRow key={uuid()}>
+                <TableCell sx={{ fontWeight: 'bold', width: '30%' }}>{key}</TableCell>
+                {/* @ts-ignore */}
+                <TableCell>{userData[key] && renderField(key, userData[key])}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       { userVolunteerHours.length !== 0 &&
         <TableContainer component={Paper} sx={{ mt: 2, maxHeight: 400 }}>
           <Table size="small" stickyHeader>

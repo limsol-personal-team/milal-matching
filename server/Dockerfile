@@ -38,6 +38,4 @@ EXPOSE 8000
 RUN pip install -r requirements.txt
 CMD python manage.py migrate && \
     redis-server --daemonize yes && \ 
-    celery -A server worker --loglevel=INFO --detach && \
-    celery -A server beat --loglevel=info --detach && \
     gunicorn

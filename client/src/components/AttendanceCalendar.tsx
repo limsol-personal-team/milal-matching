@@ -13,9 +13,9 @@ type ViewMode = 'daily' | 'range';
 
 // Common styles for consistency
 const commonPaperStyles = {
-  mt: 1, 
-  p: 1, 
-  flexGrow: 1, 
+  mt: 1,
+  p: 1,
+  flexGrow: 1,
   overflow: 'hidden',
   display: 'flex',
   flexDirection: 'column',
@@ -24,7 +24,7 @@ const commonPaperStyles = {
 
 // Reduce the list height to ensure it fits on mobile screens
 const commonListStyles = {
-  overflow: 'auto', 
+  overflow: 'auto',
   maxHeight: '45vh', // Smaller percentage to ensure it fits on mobile
   width: '100%', // Ensure consistent width
   '&::-webkit-scrollbar': {
@@ -41,19 +41,19 @@ const commonListStyles = {
 
 export default function AttendanceCalendar() {
   const { getAccessTokenSilently } = useAuth0();
-  
+
   // View mode state
   const [viewMode, setViewMode] = useState<ViewMode>('daily');
-  
+
   // Daily view states
   const [selectedDate, setSelectedDate] = useState(getCurrentDateTimeISO(true));
   const [attendanceData, setAttendanceData] = useState<MatchData[]>([]);
-  
+
   // Date range view states
   const [startDate, setStartDate] = useState(getCurrentDateTimeISO(true));
   const [endDate, setEndDate] = useState(getCurrentDateTimeISO(true));
   const [rangeAttendanceData, setRangeAttendanceData] = useState<MatchData[]>([]);
-  
+
   // Alert states
   const [errorStatus, setErrorStatus] = useState(false);
   const [successStatus, setSuccessStatus] = useState(false);
@@ -78,7 +78,7 @@ export default function AttendanceCalendar() {
       const authToken = await getAccessTokenSilently();
       const queryString = `match_date=${date}`;
       const res = await getMatchData(authToken, queryString);
-      
+
       if (!res.error) {
         setAttendanceData(res.data);
         setSuccessStatus(true);
@@ -96,7 +96,7 @@ export default function AttendanceCalendar() {
       const authToken = await getAccessTokenSilently();
       const queryString = `match_date__gte=${start}&match_date__lte=${end}`;
       const res = await getMatchData(authToken, queryString);
-      
+
       if (!res.error) {
         setRangeAttendanceData(res.data);
         setSuccessStatus(true);
@@ -133,13 +133,13 @@ export default function AttendanceCalendar() {
   // Function to get unique Milal Friends from the attendance data and sort them alphabetically
   const getUniqueMilalFriends = () => {
     const uniqueMilalFriends = new Map();
-    
+
     attendanceData.forEach((match) => {
       if (match.milal_friend) {
         uniqueMilalFriends.set(match.milal_friend.id, match.milal_friend);
       }
     });
-    
+
     // Convert to array and sort alphabetically by first name, then last name
     return Array.from(uniqueMilalFriends.values())
       .sort((a, b) => {
@@ -154,23 +154,23 @@ export default function AttendanceCalendar() {
   const getUniqueMilalFriendsWithDates = () => {
     // Create a map of Milal Friend IDs to an object containing the friend and their attendance dates
     const friendsWithDates = new Map<string, { friend: MilalFriendData, dates: Set<string> }>();
-    
+
     rangeAttendanceData.forEach((match) => {
       if (match.milal_friend && match.match_date) {
         const friendId = match.milal_friend.id;
-        
+
         if (!friendsWithDates.has(friendId)) {
           friendsWithDates.set(friendId, {
             friend: match.milal_friend,
             dates: new Set<string>()
           });
         }
-        
+
         // Add the date to the set of dates for this friend
         friendsWithDates.get(friendId)?.dates.add(match.match_date);
       }
     });
-    
+
     // Convert to array and sort alphabetically
     return Array.from(friendsWithDates.values())
       .sort((a, b) => {
@@ -184,7 +184,7 @@ export default function AttendanceCalendar() {
     const matchedVolunteers = attendanceData
       .filter(match => match.milal_friend?.id === friend.id && match.volunteer)
       .map(match => `${match.volunteer?.first_name} ${match.volunteer?.last_name}`);
-      
+
     if (matchedVolunteers.length === 0) {
       return 'Self-matched';
     } else {
@@ -196,7 +196,7 @@ export default function AttendanceCalendar() {
   const formatSimpleDate = (dateStr: string): string => {
     // Split the date string and create a date object with explicit parts to avoid timezone issues
     const [year, month, day] = dateStr.split('-').map(Number);
-    
+
     // Month is already 1-indexed in the ISO string format (YYYY-MM-DD)
     return `${month}/${day}`;
   };
@@ -210,11 +210,11 @@ export default function AttendanceCalendar() {
   const friendsWithDates = getUniqueMilalFriendsWithDates();
 
   return (
-    <Box sx={{ 
-      p: 0, 
-      display: 'flex', 
-      flexDirection: 'column', 
-      width: '100%', 
+    <Box sx={{
+      p: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
       overflow: 'hidden',
       maxWidth: '100%', // Prevent horizontal expansion
     }}>
@@ -223,8 +223,8 @@ export default function AttendanceCalendar() {
         successMessage="Attendance data loaded"
         errorMessage="Error loading attendance data"
       />
-      
-      <Box sx={{ 
+
+      <Box sx={{
         display: 'flex',
         justifyContent: 'center',
         mb: 2,
@@ -247,8 +247,8 @@ export default function AttendanceCalendar() {
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
-      
-      <Box sx={{ 
+
+      <Box sx={{
         width: '100%'
       }}>
         {viewMode === 'daily' ? (
@@ -265,7 +265,7 @@ export default function AttendanceCalendar() {
                 shrink: true,
               }}
             />
-            
+
             <Paper elevation={2} sx={commonPaperStyles}>
               {uniqueFriends.length > 0 ? (
                 <List sx={commonListStyles}>
@@ -288,8 +288,8 @@ export default function AttendanceCalendar() {
         ) : (
           // Date Range View
           <>
-            <Box sx={{ 
-              display: 'flex', 
+            <Box sx={{
+              display: 'flex',
               flexDirection: 'column',
               width: '100%',
             }}>
@@ -316,7 +316,7 @@ export default function AttendanceCalendar() {
                 }}
               />
             </Box>
-            
+
             <Paper elevation={2} sx={commonPaperStyles}>
               {friendsWithDates.length > 0 ? (
                 <List sx={commonListStyles}>
@@ -325,7 +325,7 @@ export default function AttendanceCalendar() {
                       <ListItemText
                         primary={`${friend.first_name} ${friend.last_name}`}
                         secondary={
-                          <Box sx={{ 
+                          <Box sx={{
                             wordBreak: 'break-word',
                             overflowWrap: 'break-word',
                             width: '100%'
@@ -348,4 +348,4 @@ export default function AttendanceCalendar() {
       </Box>
     </Box>
   );
-} 
+}
