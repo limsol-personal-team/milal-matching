@@ -144,6 +144,14 @@ export const putVolunteerHours = async (authToken: any, hoursId: string, data: a
   return callExternalApi(config, authToken);
 }
 
+export const deleteVolunteerHours = async (authToken: any, hoursId: string) => {
+  const config: AxiosRequestConfig = {
+    url: `/api/volunteer_hours/${hoursId}`,
+    method: "DELETE"
+  }
+  return callExternalApi(config, authToken);
+}
+
 export const getEmailAccounts = async (authToken: any, queryString: any) => {
   let url = "/api/email_accounts";
   if (queryString) {

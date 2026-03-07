@@ -236,6 +236,17 @@ export default function UserUpdate({ userType }: UserUpdateProps) {
     }
   };
 
+  // Handle volunteer hours delete
+  const handleHoursDelete = async () => {
+    if (selectedUserId) {
+      await loadVolunteerHours(selectedUserId);
+      const updatedUserData = await loadFullUserData(selectedUserId);
+      if (updatedUserData) {
+        setSelectedUserData(updatedUserData);
+      }
+    }
+  };
+
   // Handle volunteer hours success
   const handleHoursSuccess = () => {
     setSuccessStatus(true);
@@ -662,6 +673,7 @@ export default function UserUpdate({ userType }: UserUpdateProps) {
         onUpdate={handleHoursUpdate}
         onSuccess={handleHoursSuccess}
         onError={handleHoursError}
+        onDelete={handleHoursDelete}
       />
 
       {/* Email Account Update Dialog */}

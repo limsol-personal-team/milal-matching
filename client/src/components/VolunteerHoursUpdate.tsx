@@ -1,6 +1,6 @@
 import { Button, FormControl, Stack, TextField, Box, Typography, Select, MenuItem, InputLabel, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import React, { useState } from 'react';
-import { putVolunteerHours } from '../utils/serverFunctions';
+import { putVolunteerHours, deleteVolunteerHours } from '../utils/serverFunctions';
 import { useAuth0 } from '@auth0/auth0-react';
 import { VolunteerHoursFormSchema } from '../utils/formSchemas';
 import { VolunteerHoursData } from '../types/modelSchema';
@@ -13,9 +13,10 @@ export interface VolunteerHoursUpdateProps {
   onUpdate: () => void;
   onSuccess: () => void;
   onError: () => void;
+  onDelete: () => void;
 }
 
-export default function VolunteerHoursUpdate({ hoursData, open, onClose, onUpdate, onSuccess, onError }: VolunteerHoursUpdateProps) {
+export default function VolunteerHoursUpdate({ hoursData, open, onClose, onUpdate, onSuccess, onError, onDelete }: VolunteerHoursUpdateProps) {
   const { getAccessTokenSilently } = useAuth0();
   
   // Form state
@@ -51,6 +52,27 @@ export default function VolunteerHoursUpdate({ hoursData, open, onClose, onUpdat
       ...formValues,
       [name]: value,
     });
+  };
+
+  const handleDelete = async () => {
+    if (!hoursData) return;
+
+    const confirmed = window.confirm(
+      `Are you sure you want to delete this record (${hoursData.service_date?.split('T')[0]} — ${hoursData.service_type}, ${hoursData.hours} hrs)? This action cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    const authToken = await getAccessTokenSilently();
+    const res = await deleteVolunteerHours(authToken, hoursData.id);
+
+    if (res.error) {
+      onError();
+    } else {
+      onClose();
+      onDelete();
+      onSuccess();
+    }
   };
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
@@ -131,20 +153,29 @@ export default function VolunteerHoursUpdate({ hoursData, open, onClose, onUpdat
             </Stack>
           </FormControl>
           
-          <Box sx={{ mt: 3 }}>
-            <Button 
-              type="submit" 
-              variant="contained" 
-              disabled={!isFormValid}
-              sx={{ mr: 2 }}
+          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'space-between' }}>
+            <Box>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={!isFormValid}
+                sx={{ mr: 2 }}
+              >
+                Update Hours
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={onClose}
+              >
+                Cancel
+              </Button>
+            </Box>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={handleDelete}
             >
-              Update Hours
-            </Button>
-            <Button 
-              variant="outlined" 
-              onClick={onClose}
-            >
-              Cancel
+              Delete Record
             </Button>
           </Box>
         </form>
