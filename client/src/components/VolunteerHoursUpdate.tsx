@@ -1,4 +1,4 @@
-import { Button, FormControl, Stack, TextField, Box, Typography, Select, MenuItem, InputLabel, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Button, FormControl, Stack, TextField, Box, Select, MenuItem, InputLabel, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import React, { useState } from 'react';
 import { putVolunteerHours, deleteVolunteerHours } from '../utils/serverFunctions';
 import { useAuth0 } from '@auth0/auth0-react';

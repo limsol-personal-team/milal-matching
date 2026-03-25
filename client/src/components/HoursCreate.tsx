@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, ListItem, ListItemText, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, FormControl, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
@@ -56,17 +56,24 @@ export default function HoursCreate() {
   const [usersDataMap, setData] = useState<any>({});
 
   // Update specified users
-  const [userIds, setUserIds] = useState<Object[]>([]);
+  const [userIds, setUserIds] = useState<string[]>([]);
+  const [selectedUsersData, setSelectedUsersData] = useState<any[]>([]);
   
   // Alerting
   const [errorStatus, setErrorStatus] = useState(false);
   const [successStatus, setSuccessStatus] = useState(false);
   const alertProps = { errorStatus, setErrorStatus, successStatus, setSuccessStatus}
 
-  // @ts-ignore for now
-  const handleOptionClick = (idList) => {
+  const handleOptionClick = (idList: string[]) => {
     setUserIds(idList);
-  }
+    setSelectedUsersData(idList.map(id => usersDataMap[id]).filter(Boolean));
+  };
+
+  const handleDeselectVolunteer = (id: string) => {
+    const updatedIds = userIds.filter(uid => uid !== id);
+    setUserIds(updatedIds);
+    setSelectedUsersData(updatedIds.map(uid => usersDataMap[uid]).filter(Boolean));
+  };
 
   const handleInputChange = (e: { target: { name: any; value: any; }; }) => {
     const { name, value } = e.target;
@@ -126,8 +133,9 @@ export default function HoursCreate() {
   const scrollListProps: ScrollListProps = {
     initialItemList: nameList,
     handleOptionClick: handleOptionClick,
-    isMultiSelect: true
-  }
+    isMultiSelect: true,
+    selectedIds: userIds
+  };
 
   return (
     <>
@@ -186,17 +194,24 @@ export default function HoursCreate() {
       </form>
       <br></br>
       <br></br>
-      <Typography variant="h6" sx={{ textDecoration: 'underline' }} gutterBottom>
-        Selected users:
-      </Typography>
-      <div>
-        { userIds && userIds.map((key) => (
-          <div>
-            {/* @ts-ignore for now */}
-            {usersDataMap[key].first_name}
-          </div>
-        ))}
-      </div>
+      {selectedUsersData.length > 0 && (
+        <Box sx={{ mt: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Selected Volunteers ({selectedUsersData.length}):
+          </Typography>
+          <Box>
+            {selectedUsersData.map((user) => (
+              <Chip
+                key={user.id}
+                label={`${user.first_name} ${user.last_name}`}
+                variant="outlined"
+                onClick={() => handleDeselectVolunteer(user.id)}
+                sx={{ mr: 1, mb: 1, cursor: 'pointer' }}
+              />
+            ))}
+          </Box>
+        </Box>
+      )}
     </>
   );
 }

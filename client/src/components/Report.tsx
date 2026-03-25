@@ -69,6 +69,12 @@ export default function Report() {
     setSelectedUsersData([]);
   };
 
+  const handleDeselectVolunteer = (id: string) => {
+    const updatedIds = selectedUserIds.filter(uid => uid !== id);
+    setSelectedUserIds(updatedIds);
+    setSelectedUsersData(updatedIds.map(uid => usersDataMap[uid]).filter(Boolean));
+  };
+
   const handleSendReport = async () => {
     if (selectedUserIds.length === 0) {
       return;
@@ -175,12 +181,13 @@ export default function Report() {
           </Typography>
           
           <Box sx={{ mb: 2 }}>
-            {selectedUsersData.map((user, index) => (
+            {selectedUsersData.map((user) => (
               <Chip
                 key={user.id}
                 label={`${user.first_name} ${user.last_name}`}
                 variant="outlined"
-                sx={{ mr: 1, mb: 1 }}
+                onClick={() => handleDeselectVolunteer(user.id!)}
+                sx={{ mr: 1, mb: 1, cursor: 'pointer' }}
               />
             ))}
           </Box>
